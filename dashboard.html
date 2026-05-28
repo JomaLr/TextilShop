@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | TextilShop</title>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="verified_sesion.js"></script>
+    <script src="dashboard.js" defer></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <a href="index.html">
+          <div class="logo">TextilShop</div>
+        </a>
+        <ul class="menu">
+          <li class="active">
+            <a>Resumen</a>
+          </li>
+          <li>
+            <a href="admin-productos.html">Productos</a>
+          </li>
+          <li>
+            <a href="admin-categorias.html">Categorías</a>
+          </li>
+          <li>
+            <a href="admin-inventario.html">Inventario</a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- CONTENIDO -->
+      <main class="main-content">
+        <!-- HEADER -->
+        <div class="top-bar">
+          <h1>Dashboard</h1>
+
+          <div class="admin-profile">
+            <a href="perfil.html">
+              <img src="https://i.pravatar.cc/150" alt="" title="Mi Perfil" />
+            </a>
+            <div>
+              <h3 id="username">Cargando...</h3>
+              <p id="email_user">Cargando...</p>
+            </div>
+          </div>
+        </div>
+
+        <section class="cards-container">
+          <div class="card">
+            <h2 id="total-productos-vendidos">0</h2>
+            <p>Productos vendidos</p>
+          </div>
+
+          <div class="card">
+            <h2 id="total-usuarios-registrados">0</h2>
+            <p>Usuarios registrados</p>
+          </div>
+
+          <div class="card">
+            <h2 id="total-ingresos">$-</h2>
+            <p>Ingresos</p>
+          </div>
+
+          <div class="card">
+            <h2 id="total-pedidos">0</h2>
+            <p>Pedidos</p>
+          </div>
+        </section>
+
+        <section class="table-section">
+          <div class="table-header">
+            <h2>Últimas ventas</h2>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Producto</th>
+                <th>Total</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabla-ultimas-ventas"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

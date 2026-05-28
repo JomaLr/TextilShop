@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TextilShop</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo"> TextilShop </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+          <li>
+            <a href="tienda.html?categoria=Tendencias">Tendencias</a>
+          </li>
+          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+
+        <div class="nav-icons">
+          <a href="login.html" id="logearse">Login</a>
+          <a href="carrito.html">🛒</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Moda moderna para todos</h1>
+        <p>
+          Descubre ropa cómoda, elegante y con estilo para cualquier ocasión.
+        </p>
+      </div>
+
+      <div class="hero-image">
+        <img
+          src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?q=80&w=1200&auto=format&fit=crop"
+          alt="Moda"
+        />
+      </div>
+    </section>
+
+    <!-- CATEGORIAS -->
+    <section class="categories">
+      <h2>Categorías</h2>
+      <div id="contenedor-categorias" class="grid-categorias"></div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section class="products">
+      <h2>Productos Nuevos</h2>
+      <div id="contenedor-producto" class="grid-producto"></div>
+    </section>
+
+    <!-- NOSOTROS -->
+    <section class="about">
+      <div class="about-text">
+        <h2>Sobre Nosotros</h2>
+
+        <p>
+          Lo que comenzó como un pequeño sueño entre amigos por el diseño, hoy
+          se ha convertido en TextilSHop: una gran familia unida por el amor a
+          la moda consciente y las rebanadas bimbo.
+        </p>
+        <br />
+        <p>
+          Nos cansamos de la moda desechable de las grandes cadenas. Por eso,
+          decidimos crear una alternativa en línea donde cada prenda se
+          selecciona cuidando el origen de sus materiales, promoviendo el
+          comercio justo y reduciendo nuestro impacto en el planeta tierra y el
+          completo ambiente.
+        </p>
+        <br />
+        <p>
+          Trabajamos de la mano con talleres locales para asegurarnos de que
+          cada costura cuente una historia de respeto, dedicación y explotación.
+          Gracias por formar parte de este viaje. Cuando compras aquí, no solo
+          adquieres ropa; apoyas una forma más humana y responsable de vivir la
+          moda.
+        </p>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section class="map-section">
+      <h2>¡Visitanos!</h2>
+
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3763.7421412415592!2d-99.0529122!3d19.380314800000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d1fd0614558e4b%3A0x3760847a107a0b9f!2sTecNM%20%7C%20Tecnol%C3%B3gico%20Nacional%20de%20M%C3%A9xico%20Campus%20Iztapalapa!5e0!3m2!1ses-419!2smx!4v1779684501544!5m2!1ses-419!2smx"
+        width="100%"
+        height="450"
+        style="border: 0"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© 2026 TextilShop | Todos los derechos reservados</p>
+    </footer>
+  </body>
+</html>
