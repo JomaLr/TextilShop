@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventario | Dashboard</title>
+
+    <link rel="stylesheet" href="admin-inventario.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="verified_sesion.js"></script>
+    <script src="admin-inventario.js" defer></script>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <a href="index.html">
+          <div class="logo">TextilShop</div>
+        </a>
+        <ul class="menu">
+          <li>
+            <a href="dashboard.html">Resumen</a>
+          </li>
+          <li>
+            <a href="admin-productos.html">Productos</a>
+          </li>
+          <li>
+            <a href="admin-categorias.html">Categorías</a>
+          </li>
+          <li class="active">
+            <a>Inventario</a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="main-content">
+        <!-- HEADER -->
+        <div class="top-bar">
+          <div>
+            <h1>Inventario</h1>
+            <p>Control y administración del stock</p>
+          </div>
+        </div>
+
+        <!-- TABLA -->
+        <section class="table-section">
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody id="inventario_tabla"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Producto | TextilShop</title>
+    <link rel="stylesheet" href="detalle-producto.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="verlogin.js"></script>
+    <script src="detalle-producto.js" defer></script>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo"> TextilShop </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Inicio</a></li>
+          <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+          <li>
+            <a href="tienda.html?categoria=Tendencias">Tendencias</a>
+          </li>
+          <li><a href="tienda.html?categoria=Ofertas">Ofertas</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+        <div class="nav-icons">
+          <a href="login.html" id="logearse">Login</a>
+          <a href="carrito.html">🛒</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- PRODUCTO -->
+    <section class="product-section" id="detalles_prod"></section>
+
+    <!-- PRODUCTOS RELACIONADOS -->
+    <section class="related-products">
+      <h2>Productos relacionados</h2>
+      <div class="products-grid" id="grid-relacionados"></div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© 2026 TextilShop | Todos los derechos reservados</p>
+    </footer>
+  </body>
+</html>

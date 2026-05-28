@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | TextilShop</title>
+
+    <link rel="stylesheet" href="login.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- "Librerias" para usar mi conexion con DB -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="login.js" defer></script>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-image">
+        <div class="overlay">
+          <h1>Bienvenido a TextilShop</h1>
+
+          <p>Descubre las mejores tendencias de moda moderna y elegante.</p>
+        </div>
+      </div>
+
+      <!-- FORMULARIO -->
+      <div class="login-form">
+        <div class="form-box">
+          <h2>Iniciar Sesión</h2>
+
+          <form id="formulario_login">
+            <div class="input-group">
+              <label>Correo electrónico</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Ingresa tu correo"
+                required
+              />
+            </div>
+
+            <div class="input-group">
+              <label>Contraseña</label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Ingresa tu contraseña"
+                required
+              />
+            </div>
+
+            <button type="submit">Ingresar</button>
+          </form>
+
+          <div class="extra-links">
+            <p>
+              ¿No tienes cuenta?
+              <a href="registro.html">Registrarse</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
