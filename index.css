@@ -363,3 +363,92 @@ footer {
   font-size: 1.1rem;
   margin: 10px 0 5px 0;
 }
+
+/* ===================================================
+   REDISEÑO DE CONTENEDORES FLUIDOS
+   =================================================== */
+
+/* Asegura que los contenedores ID donde inyectas el JS usen Grid elástico */
+#contenedor-categorias, #contenedor-producto {
+  display: grid;
+  /* Auto-fill calcula cuántas tarjetas caben. Mínimo medirán 250px, si no caben, bajan solas */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+  width: 100%;
+}
+
+.categories, .products {
+  padding: 60px 5%; /* Reducimos ligeramente el margen lateral para pantallas móviles */
+  width: 100%;
+  overflow: hidden; /* Evita desbordamientos */
+}
+
+/* LAS TARJETAS AHORA SON ELÁSTICAS */
+.category-card, .product-card {
+  width: 100% !important; /* Rompe el width fijo de 300px anterior */
+  max-width: 100%;
+  background-color: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+  transition: 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.category-card img, .product-card img {
+  width: 100%;
+  height: 280px; /* Altura controlada para móviles y desktop */
+  object-fit: cover;
+}
+
+/* Ajustes del botón interior */
+.product-card button {
+  margin: auto 15px 20px 15px; /* Empuja el botón siempre al fondo de la tarjeta */
+  width: calc(100% - 30px);
+}
+
+/* EL HERO CORREGIDO PARA EVITAR QUE SE ESTIRE EN MÓVILES */
+.hero-text h1 {
+  font-size: clamp(2rem, 5vw, 4rem); /* Letra adaptativa: encoge en celular, crece en PC */
+  line-height: 1.2;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===================================================
+   MEDIA QUERIES DE AJUSTE ADICIONAL PARA MÓVILES
+   =================================================== */
+@media (max-width: 900px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px 5%;
+  }
+
+  .hero {
+    flex-direction: column-reverse; /* Pone la imagen arriba del texto en celulares */
+    text-align: center;
+    padding: 30px 5%;
+    gap: 30px;
+    min-height: auto;
+  }
+
+  /* Si las pantallas son extremadamente chicas, permite tarjetas de hasta 2 columnas */
+  #contenedor-categorias, #contenedor-producto {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+  }
+
+  .category-card img, .product-card img {
+    height: 180px; /* Imágenes más compactas en teléfono */
+  }
+  
+  .category-card h3, .product-card h3 {
+    font-size: 1rem;
+    padding: 10px;
+  }
+}
