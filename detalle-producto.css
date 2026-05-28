@@ -130,6 +130,8 @@ a {
 /* GALERIA */
 
 .product-gallery {
+  width: 100%;
+  height: 450px;
   flex: 1;
 }
 
@@ -142,6 +144,11 @@ a {
   border-radius: 20px;
 
   margin-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  /* OPTA POR UNA DE ESTAS DOS RESALTADAS: */
+  object-fit: contain; /* Opción A: Muestra toda la imagen con barras invisibles a los lados si es necesario */
+  /* object-fit: cover;   Opción B: Llena todo el recuadro recortando un poco los bordes pero sin deformar */  
 }
 
 .gallery-images {
