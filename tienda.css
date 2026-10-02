@@ -16,9 +16,6 @@ a {
   text-decoration: none;
 }
 
-p {
-  max-width: 400px;
-}
 .navbar {
   width: 100%;
   padding: 20px 8%;
@@ -39,6 +36,10 @@ p {
 .logo {
   font-size: 1.8rem;
   font-weight: 700;
+}
+
+.logo:hover {
+  color: black;
 }
 
 .nav-links {
@@ -110,6 +111,8 @@ p {
 
 .hero-content p {
   font-size: 1.1rem;
+  max-width: 400px; /* Aplicado únicamente a la descripción del hero si lo necesitas */
+  margin: 0 auto;
 }
 
 /* FILTROS */
@@ -243,10 +246,14 @@ p {
 footer {
   background-color: #222;
   color: white;
-
   text-align: center;
-
   padding: 25px;
+  width: 100%;
+}
+
+footer p {
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 /* RESPONSIVE */
@@ -274,21 +281,4 @@ footer {
   .hero-content h1 {
     font-size: 2.2rem;
   }
-}
-
-.logo:hover {
-  color: black;
-}
-
-footer {
-  background-color: #222;
-  color: white;
-  text-align: center;
-  padding: 25px;
-  width: 100%;
-}
-
-footer p {
-  max-width: 100%; /* Resetea el max-width solo para el footer */
-  margin: 0 auto;
 }
