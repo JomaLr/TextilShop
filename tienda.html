@@ -1,60 +1,205 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tienda | TextilShop</title>
 
-    <link rel="stylesheet" href="tienda.css" />
+<head>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="verlogin.js"></script>
-    <script src="tienda.js" defer></script>
-  </head>
-  <body>
-    <!-- NAVBAR -->
-    <header>
-      <nav class="navbar">
-        <a href="index.html" class="logo"> TextilShop </a>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Tienda | TextilShop</title>
+
+  <link
+    rel="stylesheet"
+    href="tienda.css"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="verlogin.js"></script>
+
+  <script
+    src="tienda.js"
+    defer
+  ></script>
+
+</head>
+
+
+<body>
+
+
+  <!-- =====================================================
+       NAVBAR
+       ===================================================== -->
+
+  <header>
+
+    <nav class="navbar">
+
+
+      <!-- LOGO -->
+
+      <a
+        href="index.html"
+        class="logo"
+      >
+        TextilShop
+      </a>
+
+
+      <!-- BOTON HAMBURGUESA
+           SOLO APARECE EN CELULAR -->
+
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
+
+
+      <!-- CONTENEDOR DEL MENU -->
+
+      <div
+        class="menu-contenedor"
+        id="menu-contenedor"
+      >
+
+
+        <!-- OPCIONES -->
+
         <ul class="nav-links">
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+
           <li>
-            <a href="tienda.html?categoria=Tendencias">Tendencias</a>
+            <a href="index.html">
+              Inicio
+            </a>
           </li>
-          <li><a href="contacto.html">Contacto</a></li>
-          <li><a href="faq.html">FAQ</a></li>
+
+          <li>
+            <a href="tienda.html?categoria=Novedades">
+              Novedades
+            </a>
+          </li>
+
+          <li>
+            <a href="tienda.html?categoria=Tendencias">
+              Tendencias
+            </a>
+          </li>
+
+          <li>
+            <a href="contacto.html">
+              Contacto
+            </a>
+          </li>
+
+          <li>
+            <a href="faq.html">
+              FAQ
+            </a>
+          </li>
+
         </ul>
 
+
+        <!-- LOGIN Y CARRITO -->
+
         <div class="nav-icons">
-          <a href="login.html" id="logearse">Login</a>
-          <a href="carrito.html">🛒</a>
+
+          <a
+            href="login.html"
+            id="logearse"
+          >
+            Login
+          </a>
+
+          <a
+            href="carrito.html"
+            aria-label="Carrito"
+          >
+            🛒
+          </a>
+
         </div>
-      </nav>
-    </header>
 
-    <!-- HERO -->
-    <section class="shop-hero">
-      <div class="hero-content">
-        <h1 id="zona">...</h1>
 
-        <p id="resumen_zona">...</p>
       </div>
-    </section>
 
-    <!-- PRODUCTOS -->
-    <section class="products-section">
-      <div class="products-grid" id="grid-productos"></div>
-    </section>
+    </nav>
 
-    <!-- FOOTER -->
-    <footer>
-      <p>© 2026 TextilShop | Todos los derechos reservados</p>
-    </footer>
-  </body>
+  </header>
+
+
+
+  <!-- =====================================================
+       HERO
+       ===================================================== -->
+
+  <section class="shop-hero">
+
+    <div class="hero-content">
+
+      <h1 id="zona">
+        ...
+      </h1>
+
+      <p id="resumen_zona">
+        ...
+      </p>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       PRODUCTOS
+       ===================================================== -->
+
+  <section class="products-section">
+
+    <div
+      class="products-grid"
+      id="grid-productos"
+    ></div>
+
+  </section>
+
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer>
+
+    <p>
+      © 2026 TextilShop | Todos los derechos reservados
+    </p>
+
+  </footer>
+
+
+</body>
+
 </html>
+
