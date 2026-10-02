@@ -279,6 +279,7 @@ footer {
 .logo:hover {
   color: black;
 }
-footer{
+
+footer p{
   text-align: center;
 }
