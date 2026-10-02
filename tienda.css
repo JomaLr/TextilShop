@@ -289,6 +289,6 @@ footer {
 }
 
 footer p {
-  max-width: 100%; 
+  max-width: 100%; /* Resetea el max-width solo para el footer */
   margin: 0 auto;
 }
