@@ -279,3 +279,6 @@ footer {
 .logo:hover {
   color: black;
 }
+footer{
+  text-align: center;
+}
