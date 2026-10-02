@@ -285,4 +285,10 @@ footer {
   color: white;
   text-align: center;
   padding: 25px;
+  width: 100%;
+}
+
+footer p {
+  max-width: 100%; 
+  margin: 0 auto;
 }
