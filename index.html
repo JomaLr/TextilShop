@@ -12,25 +12,41 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="index.js" defer></script>
+    <script src="menu.js" defer></script>
   </head>
   <body>
     <!-- NAVBAR -->
     <header>
       <nav class="navbar">
         <a href="index.html" class="logo"> TextilShop </a>
-        <ul class="nav-links">
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
-          <li>
-            <a href="tienda.html?categoria=Tendencias">Tendencias</a>
-          </li>
-          <li><a href="contacto.html">Contacto</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-        </ul>
 
-        <div class="nav-icons">
-          <a href="login.html" id="logearse">Login</a>
-          <a href="carrito.html">🛒</a>
+        <!-- BOTON HAMBURGUESA (SOLO CELULAR) -->
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
+
+        <!-- CONTENEDOR DEL MENU -->
+        <div class="menu-contenedor" id="menu-contenedor">
+          <ul class="nav-links">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+            <li>
+              <a href="tienda.html?categoria=Tendencias">Tendencias</a>
+            </li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
+
+          <div class="nav-icons">
+            <a href="login.html" id="logearse">Login</a>
+            <a href="carrito.html" aria-label="Carrito">🛒</a>
+          </div>
         </div>
       </nav>
     </header>
