@@ -1,0 +1,187 @@
+/* ===== Botón de cambio de tema ===== */
+.tema-toggle {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tema-toggle:hover {
+  background: rgba(128, 128, 128, 0.2);
+}
+
+.tema-toggle:focus-visible {
+  outline: 2px solid #8b6b3f;
+  outline-offset: 2px;
+}
+
+/* ===== Modo oscuro ===== */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+  background-color: #121212;
+  color: #e8e8e8;
+}
+
+/* Superficies (tarjetas, navbar, formularios) */
+[data-theme="dark"] .navbar,
+[data-theme="dark"] .menu-contenedor,
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .category-card,
+[data-theme="dark"] .tarjeta-categorias,
+[data-theme="dark"] .tarjeta-producto,
+[data-theme="dark"] .about,
+[data-theme="dark"] .contact-form,
+[data-theme="dark"] .info-box,
+[data-theme="dark"] .faq-item,
+[data-theme="dark"] .form-container,
+[data-theme="dark"] .payment-summary,
+[data-theme="dark"] .cart-item,
+[data-theme="dark"] .cart-summary,
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .order-card,
+[data-theme="dark"] .product-section,
+[data-theme="dark"] dialog {
+  background-color: #1e1e1e;
+  color: #e8e8e8;
+}
+
+[data-theme="dark"] .profile-card .info-box {
+  background-color: #2a2a2a;
+}
+
+[data-theme="dark"] .tarjeta-categorias,
+[data-theme="dark"] .tarjeta-producto {
+  border-color: #333;
+}
+
+/* Texto secundario */
+[data-theme="dark"] .hero-text p,
+[data-theme="dark"] .about-text p,
+[data-theme="dark"] .contact-info p,
+[data-theme="dark"] .faq-header p,
+[data-theme="dark"] .faq-item p,
+[data-theme="dark"] .description,
+[data-theme="dark"] .category,
+[data-theme="dark"] .product-card p,
+[data-theme="dark"] .item-info p,
+[data-theme="dark"] .summary-item,
+[data-theme="dark"] .summary-product p,
+[data-theme="dark"] .product-item p,
+[data-theme="dark"] .profile-header p,
+[data-theme="dark"] .info-box p,
+[data-theme="dark"] .input-group label {
+  color: #b8b8b8;
+}
+
+/* El texto de perfil.js tiene color inline, por eso lleva !important */
+[data-theme="dark"] .order-top p {
+  color: #b8b8b8 !important;
+}
+
+[data-theme="dark"] .total {
+  color: #e8e8e8;
+  border-top-color: #444;
+}
+
+[data-theme="dark"] .stock-indicator.agotado {
+  color: #ff6b7a !important;
+}
+
+/* Enlaces y navegación */
+[data-theme="dark"] a,
+[data-theme="dark"] .logo,
+[data-theme="dark"] .nav-links a,
+[data-theme="dark"] .nav-icons a,
+[data-theme="dark"] .icons a,
+[data-theme="dark"] .menu-toggle {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] a.enlacea {
+  color: #e0b36f;
+}
+
+[data-theme="dark"] a:hover,
+[data-theme="dark"] .logo:hover,
+[data-theme="dark"] .nav-links a:hover,
+[data-theme="dark"] .nav-icons a:hover,
+[data-theme="dark"] .icons a:hover,
+[data-theme="dark"] .menu-toggle:hover {
+  color: #c59d5f;
+}
+
+[data-theme="dark"] .nav-links li {
+  border-bottom-color: #333;
+}
+
+[data-theme="dark"] .nav-links a:hover {
+  background-color: #2a2a2a;
+}
+
+/* Campos de formulario */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: #2a2a2a;
+  color: #e8e8e8;
+  border-color: #555;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #a0a0a0;
+}
+
+/* Etiquetas */
+[data-theme="dark"] .tag {
+  background-color: #3a3226;
+  color: #e0c28f;
+}
+
+/* Botones principales (en claro eran negros) */
+[data-theme="dark"] .hero-text button,
+[data-theme="dark"] .products-grid .product-info button,
+[data-theme="dark"] .product-card button,
+[data-theme="dark"] .btn-ver-relacionado,
+[data-theme="dark"] .cart-summary button,
+[data-theme="dark"] .payment-summary button,
+[data-theme="dark"] .cart-btn,
+[data-theme="dark"] .contact-form button {
+  background-color: #e6e6e6;
+  color: #111;
+  border-color: #e6e6e6;
+}
+
+[data-theme="dark"] .hero-text button:hover,
+[data-theme="dark"] .products-grid .product-info button:hover,
+[data-theme="dark"] .product-card button:hover,
+[data-theme="dark"] .btn-ver-relacionado:hover,
+[data-theme="dark"] .cart-summary button:hover,
+[data-theme="dark"] .payment-summary button:hover,
+[data-theme="dark"] .cart-btn:hover,
+[data-theme="dark"] .contact-form button:hover {
+  background-color: #c59d5f;
+  color: #111;
+  border-color: #c59d5f;
+}
+
+/* Botones de talla (detalle-producto) */
+[data-theme="dark"] .size-buttons button {
+  background-color: #2a2a2a;
+  color: #e8e8e8;
+  border-color: #555;
+}
+
+[data-theme="dark"] .size-buttons button:hover {
+  background-color: #c59d5f;
+  color: #111;
+}
