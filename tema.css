@@ -180,6 +180,23 @@
   color: #e8e8e8;
   border-color: #555;
 }
+
+[data-theme="dark"] .size-buttons button:hover {
+  background-color: #c59d5f;
+  color: #111;
+}
+
+/* Posición del botón de tema: fuera del menú hamburguesa */
+@media (min-width: 769px) {
+  .navbar .menu-contenedor {
+    margin-left: auto;
+  }
+
+  .tema-toggle {
+    margin-left: 20px;
+  }
+}
+
 @media (max-width: 768px) {
   .tema-toggle {
     order: 2;
@@ -190,8 +207,4 @@
   .menu-toggle {
     order: 3;
   }
-}
-[data-theme="dark"] .size-buttons button:hover {
-  background-color: #c59d5f;
-  color: #111;
 }
