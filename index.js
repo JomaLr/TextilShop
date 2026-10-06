@@ -47,7 +47,7 @@ async function cargarCat() {
       const tarjetaHTML = `
           <a href="tienda.html?categoria=${categorias.nombre_categoria}">
             <div class="category-card">
-                <img src="${categorias.imagen}"">
+                <img src="${categorias.imagen}" alt="Categoria ${categorias.nombre_categoria}">
                 <h3>${categorias.nombre_categoria}</h3>
             </div>
           </a>
@@ -86,7 +86,7 @@ async function cargarproductos() {
       // Creamos la estructura HTML de la tarjeta inyectando los datos de la DB
       const panelHTML = `
             <div class="product-card">
-                <img src="${productos.imagen}">
+                <img src="${productos.imagen}" alt="Producto ${productos.nombre}">
                 <h3>${productos.nombre}</h3>
                 <p>$ ${productos.precio}</p>
                 <a href="detalle-producto.html?producto=${productos.nombre}">
