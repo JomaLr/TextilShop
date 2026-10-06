@@ -184,3 +184,12 @@ button:hover{
     }
 
 }
+
+a:hover {
+  color: #763055;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
