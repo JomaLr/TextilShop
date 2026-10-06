@@ -13,29 +13,41 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="verified_sesion.js"></script>
     <script src="perfil.js" defer></script>
+    <script src="menu.js" defer></script>
   </head>
   <body>
     <!-- NAVBAR -->
-    <header>
-      <nav class="navbar">
-        <a href="index.html" class="logo"> TextilShop </a>
-        <ul class="nav-links">
-          <li><a href="index.html">Inicio</a></li>
-          <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
-          <li>
-            <a href="tienda.html?categoria=Tendencias">Tendencias</a>
-          </li>
-          <li><a href="contacto.html">Contacto</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-        </ul>
+<header>
+  <nav class="navbar">
+    <a href="index.html" class="logo"> TextilShop </a>
 
-        <div class="nav-icons">
-          <a href="dashboard.html" id="admin_panel"></a>
-          <a href="#" id="logout">Cerrar sesión</a>
-          <a href="carrito.html">🛒</a>
-        </div>
-      </nav>
-    </header>
+    <button
+      class="menu-toggle"
+      id="menu-toggle"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+    >
+      ☰
+    </button>
+
+    <div class="menu-contenedor" id="menu-contenedor">
+      <ul class="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+        <li><a href="tienda.html?categoria=Tendencias">Tendencias</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+
+      <div class="nav-icons">
+        <a href="dashboard.html" id="admin_panel"></a>
+        <a href="#" id="logout">Cerrar sesión</a>
+        <a href="carrito.html" aria-label="Carrito">🛒</a>
+      </div>
+    </div>
+  </nav>
+</header>
 
     <!-- PERFIL -->
     <section class="profile-section">
