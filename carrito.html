@@ -1,369 +1,87 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-a {
-  text-decoration: none;
-  color: black;
-}
-
-button {
-  padding: 15px 20px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  background-color: rgb(255, 70, 70);
-  display: flex;
-}
-
-body {
-  font-family: "Poppins", sans-serif;
-  background-color: #f5f5f5;
-  color: #222;
-}
-
-/* NAVBAR */
-
-.enlacea {
-  color: #763055;
-  text-decoration: underline;
-}
-.navbar {
-  width: 100%;
-  padding: 20px 8%;
-
-  background-color: white;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.logo {
-  font-size: 1.8rem;
-  font-weight: 700;
-}
-
-.logo:hover {
-  color: purple;
-}
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 30px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: #222;
-  font-weight: 500;
-}
-
-.nav-icons {
-  display: flex;
-  gap: 20px;
-}
-
-.nav-icons a {
-  text-decoration: none;
-  color: #222;
-}
-
-/* CARRITO */
-
-.cart-section {
-  padding: 70px 8%;
-
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-}
-
-/* PRODUCTOS */
-
-.cart-products {
-  flex: 2;
-}
-
-.cart-products h1 {
-  font-size: 2.8rem;
-  margin-bottom: 40px;
-}
-
-.cart-item {
-  background-color: white;
-
-  display: flex;
-  align-items: center;
-  gap: 25px;
-
-  padding: 25px;
-
-  border-radius: 20px;
-
-  margin-bottom: 25px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-}
-
-.cart-item img {
-  width: 160px;
-  height: 160px;
-
-  object-fit: cover;
-
-  border-radius: 15px;
-}
-
-.item-info {
-  flex: 1;
-}
-
-.item-info h2 {
-  margin-bottom: 10px;
-}
-
-.item-info p {
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.item-info span {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.item-quantity {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.item-quantity input {
-  width: 90px;
-
-  padding: 12px;
-
-  border: 1px solid #ddd;
-  border-radius: 10px;
-}
-
-/* RESUMEN */
-
-.cart-summary {
-  flex: 1;
-
-  background-color: white;
-
-  padding: 35px;
-
-  border-radius: 20px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-
-  position: sticky;
-  top: 30px;
-}
-
-.cart-summary h2 {
-  margin-bottom: 30px;
-}
-
-.summary-item {
-  display: flex;
-  justify-content: space-between;
-
-  margin-bottom: 20px;
-
-  color: #666;
-}
-
-.total {
-  margin-top: 30px;
-
-  padding-top: 20px;
-
-  border-top: 1px solid #ddd;
-
-  font-size: 1.2rem;
-  font-weight: 600;
-
-  color: #222;
-}
-
-.cart-summary button {
-  width: 100%;
-
-  margin-top: 30px;
-
-  padding: 16px;
-
-  border: none;
-  border-radius: 12px;
-
-  background-color: #222;
-  color: white;
-
-  font-size: 1rem;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: 0.3s;
-}
-
-.cart-summary button:hover {
-  background-color: #c59d5f;
-}
-
-/* FOOTER */
-
-footer {
-  background-color: #222;
-  color: white;
-
-  text-align: center;
-
-  padding: 25px;
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 950px) {
-
-
-  .cart-section {
-    flex-direction: column;
-  }
-
-  .cart-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .cart-item img {
-    width: 100%;
-    height: 300px;
-  }
-
-  .cart-summary {
-    width: 100%;
-    position: static;
-  }
-
-  .cart-products h1 {
-    font-size: 2.2rem;
-  }
-}
-
-.navbar {
-  position: relative;
-  z-index: 1000;
-}
-
-.logo {
-  color: #222;
-}
-
-.logo:hover {
-  color: #c59d5f;
-}
-
-.nav-links a:hover,
-.nav-icons a:hover {
-  color: #c59d5f;
-}
-
-.menu-contenedor {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 2rem;
-  line-height: 1;
-  color: #222;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.menu-toggle:hover {
-  background: none;
-  color: #c59d5f;
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    padding: 14px 5%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .logo {
-    font-size: 1.5rem;
-  }
-
-  .menu-toggle {
-    display: block;
-    z-index: 1100;
-  }
-
-  .menu-contenedor {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-    padding: 10px 5% 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-
-  .menu-contenedor.mostrar {
-    display: flex;
-  }
-
-  .nav-links {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
-  }
-
-  .nav-links li {
-    width: 100%;
-    border-bottom: 1px solid #eeeeee;
-  }
-
-  .nav-links a {
-    display: block;
-    width: 100%;
-    padding: 14px 5px;
-  }
-
-  .nav-links a:hover {
-    background-color: #fafafa;
-  }
-
-  .nav-icons {
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-    padding-top: 15px;
-  }
-}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carrito | TextilShop</title>
+
+    <link rel="stylesheet" href="carrito.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="carrito.js" defer></script>
+    <script src="menu.js" defer></script>
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <header>
+  <nav class="navbar">
+    <a href="index.html" class="logo"> TextilShop </a>
+
+    <button
+      class="menu-toggle"
+      id="menu-toggle"
+      type="button"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+    >
+      ☰
+    </button>
+
+    <div class="menu-contenedor" id="menu-contenedor">
+      <ul class="nav-links">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+        <li><a href="tienda.html?categoria=Tendencias">Tendencias</a></li>
+        <li><a href="contacto.html">Contacto</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+
+      <div class="nav-icons">
+        <a href="login.html" id="logearse">Login</a>
+        <a href="carrito.html" aria-label="Carrito">🛒</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+    <!-- CARRITO -->
+    <section class="cart-section">
+      <!-- PRODUCTOS -->
+      <div class="cart-products">
+        <h1>Mi Carrito</h1>
+
+<div id="contenedor-carrito">
+  </div>
+
+<div class="cart-summary">
+  <h2>Resumen</h2>
+
+  <div class="summary-item">
+    <p>Subtotal</p>
+    <span id="resumen-subtotal">$0</span>
+  </div>
+
+  <div class="summary-item">
+    <p>Envío</p>
+    <span id="resumen-envio">$150</span> </div>
+
+  <div class="summary-item total">
+    <p>Total</p>
+    <span id="resumen-total">$0 MXN</span>
+  </div>
+
+  <button id="btn-proceder-pago">Proceder al pago</button>
+</div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>© 2026 TextilShop | Todos los derechos reservados</p>
+    </footer>
+  </body>
+</html>
