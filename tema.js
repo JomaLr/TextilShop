@@ -31,9 +31,7 @@
   aplicar(temaInicial());
 
   document.addEventListener("DOMContentLoaded", () => {
-    const contenedor =
-      document.querySelector(".nav-icons, .icons") ||
-      document.querySelector(".navbar");
+      const contenedor = document.querySelector(".navbar");
     if (!contenedor) return;
 
     const boton = document.createElement("button");
