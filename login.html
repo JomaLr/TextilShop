@@ -5,25 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login | TextilShop</title>
 
-    <link rel="stylesheet" href="login.css" />
+    <!-- Aplica el tema guardado antes de pintar (evita parpadeo blanco) -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("tema");
+          if (t !== "dark" && t !== "light") {
+            t = window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <!-- "Librerias" para usar mi conexion con DB -->
+
+    <link rel="stylesheet" href="login.css" />
+    <!-- tema.css va DESPUÉS de login.css para poder sobrescribirlo -->
+    <link rel="stylesheet" href="tema.css" />
+
+    <!-- Librería para la conexión a la DB -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="login.js" defer></script>
-      <link rel="stylesheet" href="tema.css" />
     <script src="tema.js" defer></script>
   </head>
   <body>
-    <heder>
-        <nav class="navbar">
-        <a href="index.html" class="logo"> TextilShop </a>
-    </heder>
-       
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">TextilShop</a>
+        <!-- tema.js agrega aquí el botón de modo oscuro -->
+      </nav>
+    </header>
+
     <div class="login-container">
       <div class="login-image">
         <div class="overlay">
@@ -40,7 +59,7 @@
 
           <form id="formulario_login">
             <div class="input-group">
-              <label>Correo electrónico</label>
+              <label for="email">Correo electrónico</label>
               <input
                 id="email"
                 type="email"
@@ -50,7 +69,7 @@
             </div>
 
             <div class="input-group">
-              <label>Contraseña</label>
+              <label for="password">Contraseña</label>
               <input
                 id="password"
                 type="password"
@@ -66,8 +85,8 @@
             <p>
               ¿No tienes cuenta?
               <a href="registro.html">Registrarse</a><br /><br />
-               <a href="index.html" title="Volver al inicio">
-                 << Volver a la tienda
+              <a href="index.html" title="Volver al inicio">
+                &lt;&lt; Volver a la tienda
               </a>
             </p>
           </div>
