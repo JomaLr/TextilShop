@@ -207,3 +207,38 @@
     order: 3;
   }
 }
+
+/* ===== Login (modo oscuro) ===== */
+[data-theme="dark"] .login-form {
+  background-color: #1e1e1e;
+}
+
+[data-theme="dark"] .form-box h2 {
+  color: #f0f0f0;
+}
+
+[data-theme="dark"] .login-form button[type="submit"] {
+  background-color: #e6e6e6;
+  color: #111;
+}
+
+[data-theme="dark"] .login-form button[type="submit"]:hover {
+  background-color: #c59d5f;
+  color: #111;
+}
+
+[data-theme="dark"] .input-group input:focus {
+  border-color: #c59d5f;
+}
+
+[data-theme="dark"] .extra-links p {
+  color: #b8b8b8;
+}
+
+[data-theme="dark"] .extra-links a {
+  color: #e0b36f;
+}
+
+[data-theme="dark"] .overlay {
+  background-color: rgba(0, 0, 0, 0.65);
+}
