@@ -89,15 +89,30 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   
-    // --- 3. Modo Oscuro (Integración inteligente con tema.js) ---
-    const isDarkModeActive = () => {
-      return document.documentElement.classList.contains("dark-mode") || 
-             document.body.classList.contains("dark-mode") ||
-             document.documentElement.classList.contains("dark") ||
-             document.body.classList.contains("dark") ||
-             localStorage.getItem("theme") === "dark" || 
-             localStorage.getItem("darkMode") === "true";
-    };
+// --- Modo Oscuro (Sincronizado con tema.js) ---
+  const CLAVE_TEMA = "tema";
+
+  const isDarkModeActive = () => {
+    return document.documentElement.getAttribute("data-theme") === "dark";
+  };
+
+  const updateDarkButtonState = (isActive) => {
+    if (!btnDark) return;
+    btnDark.classList.toggle("active-feature", isActive);
+    btnDark.setAttribute("aria-pressed", isActive);
+    btnDark.textContent = isActive ? "Desactivar Modo Oscuro" : "Activar Modo Oscuro";
+  };
+
+  const toggleDarkMode = () => {
+    const nuevoTema = isDarkModeActive() ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", nuevoTema);
+    try {
+      localStorage.setItem(CLAVE_TEMA, nuevoTema);
+    } catch (e) {}
+    updateDarkButtonState(nuevoTema === "dark");
+  };
+
+  if (btnDark) btnDark.addEventListener("click", toggleDarkMode);
   
     const updateDarkButtonState = (isActive) => {
       if (!btnDark) return;
