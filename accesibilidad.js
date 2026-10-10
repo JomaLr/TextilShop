@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <button id="toggle-keyboard" aria-pressed="false">Resaltar Foco Visible</button>
         </div>
   
-        <!-- 3. Modo Oscuro (Sincronizado con tema.js) -->
+        <!-- 3. Modo Oscuro  -->
         <div class="acc-option">
           <label for="toggle-dark">3. Modo Oscuro</label>
           <button id="toggle-dark" aria-pressed="false">Activar Modo Oscuro</button>
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
         <!-- 5. Contraste de Color -->
         <div class="acc-option">
-          <label for="toggle-contrast">5. Contraste WCAG 2.2 AA</label>
+          <label for="toggle-contrast">5. Contraste de color</label>
           <button id="toggle-contrast" aria-pressed="false">Alto Contraste</button>
         </div>
   
