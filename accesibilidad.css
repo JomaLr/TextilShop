@@ -1,211 +1,212 @@
 /* --- Estilos Base del Widget de Accesibilidad --- */
 :root {
-  --acc-bg: #ffffff;
-  --acc-text: #212529;
-  --acc-primary: #0d6efd;
-  --acc-primary-hover: #0b5ed7;
-  --acc-border: #dee2e6;
-  --acc-shadow: rgba(0, 0, 0, 0.15);
-}
-
-/* Alto Contraste (WCAG 2.2 AA) */
-html.high-contrast {
-  --acc-bg: #000000 !important;
-  --acc-text: #ffff00 !important;
-  --acc-primary: #ffffff !important;
-  --acc-border: #ffffff !important;
-}
-html.high-contrast body, 
-html.high-contrast *:not(button):not(a) {
-  background-color: #000000 !important;
-  color: #ffff00 !important;
-  border-color: #ffffff !important;
-}
-
-/* Indicador de Foco Visible (Navegación por Teclado) */
-html.keyboard-nav *:focus-visible {
-  outline: 3px solid #ff00ff !important;
-  outline-offset: 3px !important;
-  box-shadow: 0 0 0 5px rgba(255, 0, 255, 0.4) !important;
-}
-
-/* Botón Flotante de Accesibilidad (FAB) - Más compacto */
-#accessibility-fab {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 99999;
-  background-color: var(--acc-primary);
-  color: #ffffff;
-  border: none;
-  border-radius: 50px;
-  padding: 8px 14px;
-  font-size: 14px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px var(--acc-shadow);
-  transition: background-color 0.2s, transform 0.2s;
-  width: auto !important;
-  max-width: max-content;
-}
-
-#accessibility-fab:hover {
-  background-color: var(--acc-primary-hover);
-  transform: scale(1.05);
-}
-
-/* Panel Desplegable */
-#accessibility-panel {
-  position: fixed;
-  bottom: 75px;
-  right: 20px;
-  width: 320px;
-  max-height: 80vh;
-  overflow-y: auto;
-  background-color: var(--acc-bg);
-  color: var(--acc-text);
-  border: 2px solid var(--acc-border);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px var(--acc-shadow);
-  z-index: 99998;
-  padding: 15px;
-  display: none;
-  font-family: inherit;
-}
-
-#accessibility-panel.active {
-  display: block;
-  animation: fadeIn 0.25s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.acc-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid var(--acc-border);
-  padding-bottom: 8px;
-  margin-bottom: 12px;
-}
-
-.acc-header h3 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.acc-close-btn {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: var(--acc-text);
-}
-
-.acc-option {
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.acc-option label {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.acc-option button, .acc-option select, .acc-option input {
-  padding: 6px 10px;
-  border-radius: 6px;
-  border: 1px solid var(--acc-border);
-  background-color: var(--acc-bg);
-  color: var(--acc-text);
-  cursor: pointer;
-  font-size: 0.85rem;
-}
-
-.acc-option button.active-feature {
-  background-color: var(--acc-primary);
-  color: #fff;
-}
-
-.acc-reset-btn {
-  width: 100%;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 8px;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 5px;
-}
-
-.acc-reset-btn:hover {
-  background-color: #bb2d3b;
-}
-
-/* Tooltip para Texto Alternativo */
-.alt-text-badge {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.85);
-  color: #fff;
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 4px;
-  z-index: 100000;
-  max-width: 250px;
-  pointer-events: none;
-}
-
-.color-label-indicator {
-  display: none;
-  font-size: 0.8rem;
-  font-weight: bold;
-  margin-left: 5px;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-html.show-color-labels .color-label-indicator {
-  display: inline-block;
-}
-
-/* --- Ocultar globalmente el botón externo de Sol/Luna --- */
-#tema-btn, 
-.tema-btn, 
-#modo-oscuro, 
-.modo-oscuro,
-.dark-mode-btn, 
-.dark-mode-toggle,
-[id*="tema" i], 
-[class*="tema" i], 
-[id*="dark" i]:not(#toggle-dark),
-[class*="dark" i]:not(#accessibility-panel *) {
-  display: none !important;
-}
-
-/* --- Adaptabilidad Responsivo para Celulares --- */
-@media (max-width: 576px) {
-  #accessibility-panel {
-    width: calc(100vw - 20px);
-    right: 10px;
-    left: 10px;
-    bottom: 65px;
-    max-height: 75vh;
-    padding: 12px;
+    --acc-bg: #ffffff;
+    --acc-text: #212529;
+    --acc-primary: #0d6efd;
+    --acc-primary-hover: #0b5ed7;
+    --acc-border: #dee2e6;
+    --acc-shadow: rgba(0, 0, 0, 0.15);
   }
   
-  #accessibility-fab {
-    bottom: 12px;
-    right: 12px;
-    padding: 6px 12px;
-    font-size: 13px;
-    width: auto !important;
+  /* Alto Contraste (WCAG 2.2 AA) */
+  html.high-contrast {
+    --acc-bg: #000000 !important;
+    --acc-text: #ffff00 !important;
+    --acc-primary: #ffffff !important;
+    --acc-border: #ffffff !important;
   }
-}
+  html.high-contrast body, 
+  html.high-contrast *:not(button):not(a) {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border-color: #ffffff !important;
+  }
+  
+  /* Indicador de Foco Visible (Navegación por Teclado) */
+  html.keyboard-nav *:focus-visible {
+    outline: 3px solid #ff00ff !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 5px rgba(255, 0, 255, 0.4) !important;
+  }
+  
+  /* Botón Flotante de Accesibilidad (FAB) - Compacto y Fijo */
+  #accessibility-fab {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    z-index: 99999 !important;
+    background-color: var(--acc-primary) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 10px 18px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px var(--acc-shadow) !important;
+    transition: background-color 0.2s, transform 0.2s !important;
+    width: auto !important;
+    max-width: max-content !important;
+    flex: 0 0 auto !important;
+  }
+  
+  #accessibility-fab:hover {
+    background-color: var(--acc-primary-hover) !important;
+    transform: scale(1.05) !important;
+  }
+  
+  /* Panel Desplegable */
+  #accessibility-panel {
+    position: fixed;
+    bottom: 75px;
+    right: 20px;
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: var(--acc-bg);
+    color: var(--acc-text);
+    border: 2px solid var(--acc-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px var(--acc-shadow);
+    z-index: 99998;
+    padding: 15px;
+    display: none;
+    font-family: inherit;
+  }
+  
+  #accessibility-panel.active {
+    display: block;
+    animation: fadeIn 0.25s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .acc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--acc-border);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .acc-header h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+  
+  .acc-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--acc-text);
+  }
+  
+  .acc-option {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .acc-option label {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .acc-option button, .acc-option select, .acc-option input {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--acc-border);
+    background-color: var(--acc-bg);
+    color: var(--acc-text);
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  
+  .acc-option button.active-feature {
+    background-color: var(--acc-primary);
+    color: #fff;
+  }
+  
+  .acc-reset-btn {
+    width: 100%;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+  
+  .acc-reset-btn:hover {
+    background-color: #bb2d3b;
+  }
+  
+  /* Tooltip para Texto Alternativo */
+  .alt-text-badge {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 100000;
+    max-width: 250px;
+    pointer-events: none;
+  }
+  
+  .color-label-indicator {
+    display: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  html.show-color-labels .color-label-indicator {
+    display: inline-block;
+  }
+
+  /* --- Ocultar globalmente el botón externo de Sol/Luna en Computadora y Celular --- */
+  #tema-btn, 
+  .tema-btn, 
+  #modo-oscuro, 
+  .modo-oscuro,
+  .dark-mode-btn, 
+  .dark-mode-toggle,
+  [id*="tema" i], 
+  [class*="tema" i], 
+  [id*="dark" i]:not(#toggle-dark),
+  [class*="dark" i]:not(#accessibility-panel *) {
+    display: none !important;
+  }
+
+  /* --- Adaptabilidad Responsivo para Celulares --- */
+  @media (max-width: 576px) {
+    #accessibility-panel {
+      width: calc(100vw - 20px);
+      right: 10px;
+      left: 10px;
+      bottom: 65px;
+      max-height: 75vh;
+      padding: 12px;
+    }
+    
+    #accessibility-fab {
+      bottom: 15px !important;
+      right: 15px !important;
+      padding: 8px 14px !important;
+      font-size: 13px !important;
+    }
+  }
