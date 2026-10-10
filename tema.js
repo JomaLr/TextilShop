@@ -31,7 +31,9 @@
   aplicar(temaInicial());
 
   document.addEventListener("DOMContentLoaded", () => {
-      const contenedor = document.querySelector(".navbar");
+    // Tienda: navbar. Dashboard/admin: barra lateral (no tienen navbar)
+    const contenedor =
+      document.querySelector(".navbar") || document.querySelector(".sidebar");
     if (!contenedor) return;
 
     const boton = document.createElement("button");
@@ -43,17 +45,20 @@
 
     aplicar(document.documentElement.getAttribute("data-theme"));
 
-    boton.addEventListener("click", () => {
-      const nuevo =
-        document.documentElement.getAttribute("data-theme") === "dark"
-          ? "light"
-          : "dark";
-      try {
-        localStorage.setItem(CLAVE, nuevo);
-      } catch (e) {}
-      aplicar(nuevo);
-    });
+    boton.addEventListener("click", alternar);
   });
+
+  function alternar() {
+    const nuevo =
+      document.documentElement.getAttribute("data-theme") === "dark"
+        ? "light"
+        : "dark";
+    try {
+      localStorage.setItem(CLAVE, nuevo);
+    } catch (e) {}
+    aplicar(nuevo);
+  }
+  window.toggleTheme = alternar;
 
   // Si el usuario nunca eligió, seguir el cambio del sistema
   window
@@ -62,4 +67,5 @@
       if (!leerGuardado()) aplicar(e.matches ? "dark" : "light");
     });
 })();
+
 
