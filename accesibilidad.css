@@ -1,0 +1,176 @@
+/* --- Estilos Base del Widget de Accesibilidad --- */
+:root {
+    --acc-bg: #ffffff;
+    --acc-text: #212529;
+    --acc-primary: #0d6efd;
+    --acc-primary-hover: #0b5ed7;
+    --acc-border: #dee2e6;
+    --acc-shadow: rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Alto Contraste (WCAG 2.2 AA) */
+  html.high-contrast {
+    --acc-bg: #000000 !important;
+    --acc-text: #ffff00 !important;
+    --acc-primary: #ffffff !important;
+    --acc-border: #ffffff !important;
+  }
+  html.high-contrast body, 
+  html.high-contrast *:not(button):not(a) {
+    background-color: #000000 !important;
+    color: #ffff00 !important;
+    border-color: #ffffff !important;
+  }
+  
+  /* Indicador de Foco Visible (Navegación por Teclado) */
+  html.keyboard-nav *:focus-visible {
+    outline: 3px solid #ff00ff !important;
+    outline-offset: 3px !important;
+    box-shadow: 0 0 0 5px rgba(255, 0, 255, 0.4) !important;
+  }
+  
+  /* Botón Flotante de Accesibilidad (FAB) */
+  #accessibility-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999;
+    background-color: var(--acc-primary);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--acc-shadow);
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  #accessibility-fab:hover {
+    background-color: var(--acc-primary-hover);
+    transform: scale(1.05);
+  }
+  
+  /* Panel Desplegable */
+  #accessibility-panel {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 320px;
+    max-height: 85vh;
+    overflow-y: auto;
+    background-color: var(--acc-bg);
+    color: var(--acc-text);
+    border: 2px solid var(--acc-border);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px var(--acc-shadow);
+    z-index: 99998;
+    padding: 20px;
+    display: none;
+    font-family: inherit;
+  }
+  
+  #accessibility-panel.active {
+    display: block;
+    animation: fadeIn 0.25s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .acc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--acc-border);
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .acc-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  
+  .acc-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--acc-text);
+  }
+  
+  .acc-option {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .acc-option label {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  .acc-option button, .acc-option select, .acc-option input {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--acc-border);
+    background-color: var(--acc-bg);
+    color: var(--acc-text);
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .acc-option button.active-feature {
+    background-color: var(--acc-primary);
+    color: #fff;
+  }
+  
+  .acc-reset-btn {
+    width: 100%;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .acc-reset-btn:hover {
+    background-color: #bb2d3b;
+  }
+  
+  /* Tooltip para Texto Alternativo */
+  .alt-text-badge {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 100000;
+    max-width: 250px;
+    pointer-events: none;
+  }
+  
+  /* Refuerzo de Uso de Color */
+  .color-label-indicator {
+    display: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-left: 5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  html.show-color-labels .color-label-indicator {
+    display: inline-block;
+  }
