@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Inyectar estructura HTML del widget en el documento
+    // Inyectar estructura HTML usando un DIV con rol de botón para evitar conflictos con login.css
     const widgetContainer = document.createElement("div");
     widgetContainer.id = "accessibility-widget-container";
     widgetContainer.innerHTML = `
-      <button id="accessibility-fab" aria-expanded="false" aria-controls="accessibility-panel" aria-label="Abrir menú de accesibilidad">
+      <div id="accessibility-fab" role="button" tabindex="0" style="position: fixed !important; bottom: 20px !important; right: 20px !important; left: auto !important; width: auto !important; max-width: max-content !important; display: inline-flex !important; align-items: center !important; gap: 8px !important; background-color: #0d6efd !important; color: #ffffff !important; border: none !important; border-radius: 50px !important; padding: 10px 18px !important; font-size: 14px !important; font-weight: 600 !important; cursor: pointer !important; z-index: 99999 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;" aria-expanded="false" aria-controls="accessibility-panel" aria-label="Abrir menú de accesibilidad">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="4" r="2"/><path d="M19 13v-2c-1.5 0-3-1-3-3s-1.5-3-3-3-3 1-3 3-1.5 3-3 3v2h2v7h3v-4h2v4h3v-7h2z"/></svg>
         Accesibilidad
-      </button>
+      </div>
   
       <div id="accessibility-panel" role="region" aria-label="Panel de Accesibilidad">
         <div class="acc-header">
@@ -68,11 +68,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const fontSizeVal = document.getElementById("font-size-val");
     const resetBtn = document.getElementById("acc-reset");
   
-    // Abrir / Cerrar Panel
-    fab.addEventListener("click", () => {
+    // Abrir / Cerrar Panel (Soporte para Clic y Teclado en el div)
+    const togglePanel = () => {
       const isOpen = panel.classList.toggle("active");
       fab.setAttribute("aria-expanded", isOpen);
       if (isOpen) panel.querySelector("button, input").focus();
+    };
+
+    fab.addEventListener("click", togglePanel);
+    fab.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        togglePanel();
+      }
     });
   
     closeBtn.addEventListener("click", () => {
