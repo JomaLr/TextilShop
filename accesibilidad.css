@@ -172,33 +172,33 @@
   html.show-color-labels .color-label-indicator {
     display: inline-block;
   }
-
 /* --- Ocultar únicamente el botón independiente de Sol/Luna externo (sin afectar el panel) --- */
-#tema-btn, 
-.tema-btn, 
-#modo-oscuro, 
-.dark-mode-btn, 
-button[id*="tema" i],
-button[class*="tema" i],
-button[class*="dark" i]:not(#toggle-dark) {
-  display: none !important;
-}
+  #tema-btn, 
+  .tema-btn, 
+  #modo-oscuro, 
+  .dark-mode-btn, 
+  button[id*="tema" i],
+  button[class*="tema" i],
+  button[class*="dark" i]:not(#toggle-dark) {
+    display: none !important;
+  }
 
-/* --- Adaptabilidad Responsivo para Celulares --- */
-@media (max-width: 576px) {
-  #accessibility-panel {
-    width: calc(100vw - 24px);
-    right: 12px;
-    left: 12px;
-    bottom: 75px;
-    max-height: 80vh;
-    padding: 15px;
+  /* --- Adaptabilidad Responsivo para Celulares --- */
+  @media (max-width: 576px) {
+    #accessibility-panel {
+      width: calc(100vw - 24px);
+      right: 12px;
+      left: 12px;
+      bottom: 75px;
+      max-height: 80vh;
+      padding: 15px;
+    }
+    
+    #accessibility-fab {
+      bottom: 15px;
+      right: 15px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
   }
-  
-  #accessibility-fab {
-    bottom: 15px;
-    right: 15px;
-    padding: 10px 16px;
-    font-size: 14px;
-  }
-}
+
