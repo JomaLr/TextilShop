@@ -29,7 +29,7 @@ html.keyboard-nav *:focus-visible {
   box-shadow: 0 0 0 5px rgba(255, 0, 255, 0.4) !important;
 }
 
-/* Botón Flotante de Accesibilidad (FAB) */
+/* Botón Flotante de Accesibilidad (FAB) - Más compacto */
 #accessibility-fab {
   position: fixed;
   bottom: 20px;
@@ -39,15 +39,17 @@ html.keyboard-nav *:focus-visible {
   color: #ffffff;
   border: none;
   border-radius: 50px;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  display: flex;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   box-shadow: 0 4px 12px var(--acc-shadow);
   transition: background-color 0.2s, transform 0.2s;
+  width: auto !important;
+  max-width: max-content;
 }
 
 #accessibility-fab:hover {
@@ -58,10 +60,10 @@ html.keyboard-nav *:focus-visible {
 /* Panel Desplegable */
 #accessibility-panel {
   position: fixed;
-  bottom: 80px;
+  bottom: 75px;
   right: 20px;
   width: 320px;
-  max-height: 85vh;
+  max-height: 80vh;
   overflow-y: auto;
   background-color: var(--acc-bg);
   color: var(--acc-text);
@@ -69,7 +71,7 @@ html.keyboard-nav *:focus-visible {
   border-radius: 12px;
   box-shadow: 0 8px 24px var(--acc-shadow);
   z-index: 99998;
-  padding: 20px;
+  padding: 15px;
   display: none;
   font-family: inherit;
 }
@@ -89,13 +91,13 @@ html.keyboard-nav *:focus-visible {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid var(--acc-border);
-  padding-bottom: 10px;
-  margin-bottom: 15px;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .acc-header h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .acc-close-btn {
@@ -107,25 +109,25 @@ html.keyboard-nav *:focus-visible {
 }
 
 .acc-option {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
 }
 
 .acc-option label {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .acc-option button, .acc-option select, .acc-option input {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
   border: 1px solid var(--acc-border);
   background-color: var(--acc-bg);
   color: var(--acc-text);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .acc-option button.active-feature {
@@ -138,11 +140,11 @@ html.keyboard-nav *:focus-visible {
   background-color: #dc3545;
   color: white;
   border: none;
-  padding: 10px;
+  padding: 8px;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 5px;
 }
 
 .acc-reset-btn:hover {
@@ -174,7 +176,7 @@ html.show-color-labels .color-label-indicator {
   display: inline-block;
 }
 
-/* --- Ocultar globalmente el botón externo de Sol/Luna en Computadora y Celular --- */
+/* --- Ocultar globalmente el botón externo de Sol/Luna --- */
 #tema-btn, 
 .tema-btn, 
 #modo-oscuro, 
@@ -191,18 +193,19 @@ html.show-color-labels .color-label-indicator {
 /* --- Adaptabilidad Responsivo para Celulares --- */
 @media (max-width: 576px) {
   #accessibility-panel {
-    width: calc(100vw - 24px);
-    right: 12px;
-    left: 12px;
-    bottom: 75px;
-    max-height: 80vh;
-    padding: 15px;
+    width: calc(100vw - 20px);
+    right: 10px;
+    left: 10px;
+    bottom: 65px;
+    max-height: 75vh;
+    padding: 12px;
   }
   
   #accessibility-fab {
-    bottom: 15px;
-    right: 15px;
-    padding: 10px 16px;
-    font-size: 14px;
+    bottom: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    font-size: 13px;
+    width: auto !important;
   }
 }
