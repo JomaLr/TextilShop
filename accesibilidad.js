@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <button id="toggle-keyboard" aria-pressed="false">Resaltar Foco Visible</button>
         </div>
   
-        <!-- 3. Modo Oscuro  -->
+        <!-- 3. Modo Oscuro -->
         <div class="acc-option">
           <label for="toggle-dark">3. Modo Oscuro</label>
           <button id="toggle-dark" aria-pressed="false">Activar Modo Oscuro</button>
@@ -89,40 +89,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   
-// --- Modo Oscuro (Sincronizado con tema.js) ---
-  const CLAVE_TEMA = "tema";
+    // --- Modo Oscuro ---
+    const isDarkModeActive = () => {
+      return document.documentElement.getAttribute("data-theme") === "dark" || 
+             document.documentElement.classList.contains("dark-mode");
+    };
 
-  const isDarkModeActive = () => {
-    return document.documentElement.getAttribute("data-theme") === "dark";
-  };
-
-  const updateDarkButtonState = (isActive) => {
-    if (!btnDark) return;
-    btnDark.classList.toggle("active-feature", isActive);
-    btnDark.setAttribute("aria-pressed", isActive);
-    btnDark.textContent = isActive ? "Desactivar Modo Oscuro" : "Activar Modo Oscuro";
-  };
-
-  const toggleDarkMode = () => {
-    const nuevoTema = isDarkModeActive() ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", nuevoTema);
-    try {
-      localStorage.setItem(CLAVE_TEMA, nuevoTema);
-    } catch (e) {}
-    updateDarkButtonState(nuevoTema === "dark");
-  };
-
-  if (btnDark) btnDark.addEventListener("click", toggleDarkMode);
-  
     const updateDarkButtonState = (isActive) => {
       if (!btnDark) return;
       btnDark.classList.toggle("active-feature", isActive);
       btnDark.setAttribute("aria-pressed", isActive);
       btnDark.textContent = isActive ? "Desactivar Modo Oscuro" : "Activar Modo Oscuro";
     };
-  
+
     const toggleDarkMode = () => {
-      // Busca el botón de tema existente en tu página para simular su clic
       const existingThemeBtn = document.querySelector('#tema-btn') || 
                                document.querySelector('#modo-oscuro') || 
                                document.querySelector('.tema-btn') || 
@@ -133,11 +113,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                document.querySelector('button[class*="dark" i]');
   
       if (existingThemeBtn) {
-        existingThemeBtn.click(); // Ejecuta exactamente la misma lógica de tu tema.js
+        existingThemeBtn.click();
       } else if (typeof window.toggleTheme === "function") {
-        window.toggleTheme(); // Si expusiste una función global
+        window.toggleTheme();
       } else {
-        // Método de respaldo por si no encuentra el botón específico
         const willBeDark = !isDarkModeActive();
         document.documentElement.classList.toggle("dark-mode", willBeDark);
         document.body.classList.toggle("dark-mode", willBeDark);
@@ -145,12 +124,11 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("darkMode", willBeDark);
       }
   
-      // Refrescar estado visual del botón en el panel tras el cambio
       setTimeout(() => {
         updateDarkButtonState(isDarkModeActive());
       }, 50);
     };
-  
+
     if (btnDark) {
       btnDark.addEventListener("click", toggleDarkMode);
     }
@@ -255,11 +233,11 @@ document.addEventListener("DOMContentLoaded", () => {
       applyZoom(100);
       
       if (isDarkModeActive()) {
-        toggleDarkMode(); // Apagará el modo oscuro usando la misma lógica del botón original
+        toggleDarkMode();
       }
   
       panel.classList.remove("active");
     });
-  
+
     loadSettings();
-  });
+});
