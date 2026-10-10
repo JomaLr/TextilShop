@@ -207,7 +207,7 @@ a {
     }
 }
 
-/* --- Soportar Modo Oscuro en Registro (Igual que Login) --- */
+/* --- MODO OSCURO (Forzado para coincidir con Login) --- */
 body.dark-mode, 
 html[data-theme="dark"] body {
     background-color: #121212 !important;
