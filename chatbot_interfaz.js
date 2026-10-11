@@ -3,7 +3,7 @@ import { Chatbot } from "./chatbot.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const miBot = new Chatbot();
-
+  const musicaBot = new Audio("OSII.mp3");
   // 1. Inyectar el HTML del Chatbot al final del body
   const chatHTML = `
         <div id="textilshop-chatbot-container">
@@ -67,19 +67,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = inputField.value.trim();
     if (text === "") return;
 
-    // Mostrar mensaje del usuario
     appendMessage("Tu", text, "user-msg");
-    inputField.value = ""; // Limpiar input
+    inputField.value = "";
 
-    // Procesar comando en la lógica del bot
     const respuesta = miBot.procesarComando(text);
 
-    // Simular un pequeño retraso natural de respuesta
     setTimeout(() => {
-      appendMessage("DamianBOT", respuesta, "bot-msg");
-      // Si el estado regresó algún extra del inicio, lo procesamos
-      const extra = miBot.iniciarChat();
-      if (extra) appendMessage("DamianBOT", extra, "bot-msg");
+      if (typeof respuesta === "object" && respuesta !== null) {
+        appendMessage("DamianBOT", respuesta.texto, "bot-msg");
+
+        if (respuesta.audio === "cancion") {
+          musicaBot.currentTime = 0;
+          musicaBot
+            .play()
+            .catch((err) => console.log("Error al reproducir audio:", err));
+        }
+      } else {
+        appendMessage("DamianBOT", respuesta, "bot-msg");
+      }
     }, 300);
   }
 
