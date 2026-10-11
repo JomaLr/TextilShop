@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "index.html";
   });
 });
+<<<<<<< HEAD
 
 // ==========================================
 // COMPROBANTE EN PDF (jsPDF + AutoTable)
@@ -101,3 +102,85 @@ async function descargarComprobante(idTicket, boton) {
     boton.textContent = textoOriginal;
   }
 }
+=======
+
+// ==========================================
+// COMPROBANTE EN PDF (jsPDF + AutoTable)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  const btnPdf = document.getElementById("btn-pdf");
+  const idTicket = new URLSearchParams(window.location.search).get("compra");
+  if (!btnPdf) return;
+  if (!idTicket) {
+    btnPdf.style.display = "none"; // sin ticket no hay comprobante
+    return;
+  }
+  btnPdf.addEventListener("click", () => descargarComprobante(idTicket, btnPdf));
+});
+
+async function descargarComprobante(idTicket, boton) {
+  const textoOriginal = boton.textContent;
+  boton.disabled = true;
+  boton.textContent = "Generando...";
+
+  try {
+    // Traemos el ticket con su desglose (RLS limita a los tickets del usuario)
+    const { data: ticket, error } = await supabase_sesion
+      .from("tickets")
+      .select(
+        "id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )",
+      )
+      .eq("id_ticket", idTicket)
+      .single();
+
+    if (error || !ticket) throw error || new Error("Ticket no encontrado");
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const moneda = (n) =>
+      `$${Number(n || 0).toLocaleString("es-MX", { minimumFractionDigits: 2 })} MXN`;
+
+    // Encabezado
+    doc.setFontSize(22);
+    doc.text("TextilShop", 14, 20);
+    doc.setFontSize(12);
+    doc.setTextColor(100);
+    doc.text("Comprobante de compra", 14, 28);
+    doc.text(`Pedido: #TK-${ticket.id_ticket}`, 14, 36);
+    doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`, 14, 43);
+
+    // Tabla de productos
+    const filas = (ticket.tickets_detalles || []).map((d) => [
+      d.productos ? d.productos.nombre : "Producto no disponible",
+      d.cantidad,
+      moneda(d.productos ? d.productos.precio : 0),
+      moneda(d.total),
+    ]);
+
+    doc.autoTable({
+      startY: 52,
+      head: [["Producto", "Cant.", "Precio", "Subtotal"]],
+      body: filas,
+      headStyles: { fillColor: [34, 34, 34] },
+      styles: { fontSize: 11 },
+    });
+
+    // Total
+    const y = doc.lastAutoTable.finalY + 12;
+    doc.setTextColor(0);
+    doc.setFontSize(14);
+    doc.text(`Total: ${moneda(ticket.total)}`, 14, y);
+    doc.setFontSize(10);
+    doc.setTextColor(120);
+    doc.text("Entrega estimada: 3 - 5 dias habiles. Gracias por tu compra.", 14, y + 12);
+
+    doc.save(`comprobante-TK-${ticket.id_ticket}.pdf`);
+  } catch (err) {
+    console.error("Error al generar el PDF:", err);
+    await alerta("No se pudo generar el comprobante. Intenta de nuevo.", "error");
+  } finally {
+    boton.disabled = false;
+    boton.textContent = textoOriginal;
+  }
+}
+>>>>>>> 632c788342bcc1660aeb7b0031c8d0b882ab3468

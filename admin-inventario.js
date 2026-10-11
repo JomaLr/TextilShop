@@ -125,3 +125,4 @@ tbodyInventario.addEventListener("click", async (evento) => {
     }
   }
 });
+

@@ -243,3 +243,4 @@ productSection.addEventListener("click", async (evento) => {
 
 // Inicializamos la función cuando todo el HTML esté listo
 document.addEventListener("DOMContentLoaded", cargarProducto);
+
