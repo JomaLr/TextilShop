@@ -12,6 +12,12 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- jsPDF + AutoTable: comprobante en PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
+    <script src="ui.js"></script>
     <script src="verified_sesion.js"></script>
     <script src="gracias-compra.js"></script>
   </head>
@@ -46,6 +52,10 @@
         </div>
 
         <div class="buttons">
+          <button type="button" id="btn-pdf" class="primary-btn">
+            Descargar comprobante PDF
+          </button>
+
           <a href="perfil.html" class="primary-btn"> Ver mis pedidos </a>
 
           <a href="index.html" class="secondary-btn"> Seguir comprando </a>
@@ -54,3 +64,4 @@
     </section>
   </body>
 </html>
+
