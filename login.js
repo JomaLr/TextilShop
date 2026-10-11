@@ -42,7 +42,7 @@ formulario.addEventListener("submit", async (evento) => {
   console.log(document.getElementById("password").value);
 
   if (email === "" || contrasena === "") {
-    alert("Por favor, rellena todos los campos.");
+    await alerta("Por favor, rellena todos los campos.");
     return;
   }
 
@@ -53,9 +53,9 @@ formulario.addEventListener("submit", async (evento) => {
   });
 
   if (error) {
-    alert("Correo o contraseña incorrectos");
+    await alerta("Correo o contraseña incorrectos");
   } else {
-    alert("¡Sesión iniciada!");
+    await alerta("¡Sesión iniciada!");
     // Supabase ya guardó el token en el localStorage.
     // Ya podemos mandarlo al dashboard
     window.location.href = "perfil.html";
