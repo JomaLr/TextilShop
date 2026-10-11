@@ -51,7 +51,7 @@ async function cargarProductosEnTabla() {
               <tr>
                 <td>
                   <div class="product-info">
-                    <img src="${producto.imagen}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"/>
+                    <img src="${producto.imagen}" alt="${producto.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"/>
                     <span>${producto.nombre}</span>
                   </div>
                 </td>
