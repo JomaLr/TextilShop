@@ -169,7 +169,7 @@ contenedorCarrito.addEventListener("input", async (evento) => {
 
     // Alerta visual inmediata si supera el stock del inventario
     if (nuevaCantidad > stockMaximo) {
-      alert(
+      await alerta(
         `Lo sentimos, solo quedan ${stockMaximo} unidades disponibles en inventario.`,
       );
       input.value = stockMaximo; // Reseteamos al tope
@@ -225,24 +225,25 @@ btnPago.addEventListener("click", async () => {
   let stockValido = true;
 
   if (items.length === 0) {
-    alert("Tu carrito está vacío.");
+    await alerta("Tu carrito está vacío.");
     return;
   }
 
   // Verificación final del stock antes de avanzar
-  items.forEach((item) => {
+  for (const item of items) {
     const input = item.querySelector(".cantidad-input");
     const cantidadSeleccionada = parseInt(input.value);
     const stockMaximo = parseInt(input.getAttribute("data-stock"));
     const nombreProducto = item.querySelector(".item-info h2").textContent;
 
     if (cantidadSeleccionada > stockMaximo) {
-      alert(
+      await alerta(
         `No puedes proceder. El producto "${nombreProducto}" supera el stock disponible (${stockMaximo}).`,
       );
       stockValido = false;
+      break; // un aviso a la vez
     }
-  });
+  }
 
   if (!stockValido) return;
 

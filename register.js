@@ -25,13 +25,13 @@ formRegistro.addEventListener("submit", async (evento) => {
 
   //Si cualquiera de los tres está vacío, detenemos el programa
   if (nombreInput === "" || correoInput === "" || passInput === "") {
-    alert("Todos los campos son obligatorios y no pueden estar vacíos!");
+    await alerta("Todos los campos son obligatorios y no pueden estar vacíos!");
     return; // Este return rompe la función y evita que se ejecute el INSERT
   }
 
   //Por seguridad supabase obliga a que la contraseña sea mayor a 6 caracteres asi que aqui verificamos que la contraseña sea mayor a 6 caracteres
   if (passInput.length < 6) {
-    alert(
+    await alerta(
       "La contraseña es demasiado corta. Debe tener al menos 6 caracteres.",
     );
     return;
@@ -47,7 +47,7 @@ formRegistro.addEventListener("submit", async (evento) => {
   // Si hubo un error en la autenticación
   if (authError) {
     console.error("Error en Auth:", authError);
-    alert("Error al crear las credenciales: " + authError.message);
+    await alerta("Error al crear las credenciales: " + authError.message);
     return; // Detenemos el código
   }
 
@@ -68,12 +68,12 @@ formRegistro.addEventListener("submit", async (evento) => {
   //Verificamos el resultado final de la tabla
   if (tablaError) {
     console.error("Error en tabla pública:", tablaError);
-    alert(
+    await alerta(
       "Se crearon las credenciales, pero hubo un error al guardar tu perfil: " +
         tablaError.message,
     );
   } else {
-    alert("¡Cuenta creada con éxito!");
+    await alerta("¡Cuenta creada con éxito!");
 
     const parametros = {
       email: correoInput, //campo "To Email" {{email}}
@@ -86,9 +86,9 @@ formRegistro.addEventListener("submit", async (evento) => {
         formRegistro.reset(); // Limpiamos los campos del formulario
         window.location.href = "login.html";
       },
-      function (error) {
+      async function (error) {
         console.error("Error: ", error);
-        alert("Error: " + JSON.stringify(error));
+        await alerta("Error: " + JSON.stringify(error));
       },
     );
   }

@@ -63,6 +63,7 @@ async function inicializarDashboardAdmin() {
             nombre
           ),
           tickets_detalles (
+            cantidad,
             productos (
               nombre
             )
@@ -118,6 +119,11 @@ async function inicializarDashboardAdmin() {
     document.getElementById("total-pedidos").textContent = totalPedidos;
 
     // ===================================================
+    // 1.1 GRÁFICAS (Chart.js)
+    // ===================================================
+    dibujarGraficas(tickets);
+
+    // ===================================================
     // 2. RENDERIZACIÓN DE LA TABLA DE ÚLTIMAS VENTAS
     // ===================================================
     const tbody = document.getElementById("tabla-ultimas-ventas");
@@ -167,4 +173,77 @@ async function inicializarDashboardAdmin() {
       err,
     );
   }
+}
+
+
+// ===================================================
+// GRÁFICAS CON CHART.JS
+// ===================================================
+let graficaIngresos = null;
+let graficaProductos = null;
+
+function dibujarGraficas(tickets) {
+  if (typeof Chart === "undefined" || tickets.length === 0) return;
+
+  const colorTexto = getComputedStyle(document.body).color || "#222";
+  Chart.defaults.font.family = "Poppins, sans-serif";
+  Chart.defaults.color = colorTexto;
+
+  // --- Gráfica 1: ingresos de los últimos 10 pedidos (línea) ---
+  const ultimos = tickets.slice(0, 10).reverse(); // de más viejo a más nuevo
+  if (graficaIngresos) graficaIngresos.destroy();
+  graficaIngresos = new Chart(document.getElementById("grafica-ingresos"), {
+    type: "line",
+    data: {
+      labels: ultimos.map((t) => `#TK-${t.id_ticket}`),
+      datasets: [
+        {
+          label: "Total (MXN)",
+          data: ultimos.map((t) => t.total || 0),
+          borderColor: "#c59d5f",
+          backgroundColor: "rgba(197, 157, 95, 0.2)",
+          fill: true,
+          tension: 0.3,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } },
+    },
+  });
+
+  // --- Gráfica 2: top 5 productos por unidades vendidas (dona) ---
+  const ventasPorProducto = {};
+  tickets.forEach((t) => {
+    (t.tickets_detalles || []).forEach((d) => {
+      const nombre = d.productos ? d.productos.nombre : "No disponible";
+      ventasPorProducto[nombre] =
+        (ventasPorProducto[nombre] || 0) + (d.cantidad || 0);
+    });
+  });
+  const top = Object.entries(ventasPorProducto)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  if (graficaProductos) graficaProductos.destroy();
+  graficaProductos = new Chart(document.getElementById("grafica-productos"), {
+    type: "doughnut",
+    data: {
+      labels: top.map(([nombre]) => nombre),
+      datasets: [
+        {
+          data: top.map(([, cantidad]) => cantidad),
+          backgroundColor: ["#222", "#c59d5f", "#8a6d3b", "#6b7280", "#d9c7a3"],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom" } },
+    },
+  });
 }

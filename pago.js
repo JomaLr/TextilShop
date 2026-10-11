@@ -61,7 +61,7 @@ async function inicializarPago() {
     } = await supabase_conexion.auth.getUser();
 
     if (errorUser || !user) {
-      alert("Debes iniciar sesión para procesar la compra.");
+      await alerta("Debes iniciar sesión para procesar la compra.");
       window.location.href = "login.html";
       return;
     }
@@ -111,7 +111,7 @@ async function cargarProductoUnico(idProducto) {
     .single();
 
   if (error || !producto) {
-    alert("Error al cargar la información del producto.");
+    await alerta("Error al cargar la información del producto.");
     return;
   }
 
@@ -147,7 +147,7 @@ async function cargarProductosDesdeCarrito() {
     .eq("id_usuario", idUsuarioLogueado);
 
   if (error || !registrosCarrito || registrosCarrito.length === 0) {
-    alert("No se encontraron productos para facturar.");
+    await alerta("No se encontraron productos para facturar.");
     window.location.href = "carrito.html";
     return;
   }
@@ -205,7 +205,7 @@ btnConfirmar.addEventListener("click", async () => {
     .value.trim();
 
   if (!nombreCliente || !direccionCliente) {
-    alert("Por favor, completa tus datos de envío antes de confirmar.");
+    await alerta("Por favor, completa tus datos de envío antes de confirmar.");
     return;
   }
 
@@ -290,11 +290,11 @@ btnConfirmar.addEventListener("click", async () => {
     );
 
     // FASE E: Finalización exitosa y redirección
-    alert("¡Compra confirmada con éxito! Muchísimas gracias.");
+    await alerta("¡Compra confirmada con éxito! Muchísimas gracias.");
     window.location.href = `gracias-compra.html?compra=${idTicketNuevo}`;
   } catch (err) {
     console.error(err);
-    alert("Ocurrió un inconveniente procesando tu pedido: " + err.message);
+    await alerta("Ocurrió un inconveniente procesando tu pedido: " + err.message);
     btnConfirmar.disabled = false;
     btnConfirmar.textContent = "Confirmar Compra";
   }

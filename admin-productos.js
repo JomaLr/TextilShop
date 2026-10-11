@@ -94,7 +94,7 @@ formularioProducto.addEventListener("submit", async (evento) => {
   const archivoFisico = inputFoto.files[0];
 
   if (!archivoFisico) {
-    alert("Por favor, selecciona una imagen para el producto.");
+    await alerta("Por favor, selecciona una imagen para el producto.");
     return;
   }
 
@@ -110,7 +110,7 @@ formularioProducto.addEventListener("submit", async (evento) => {
 
     if (errorStorage) {
       console.error("Error al subir imagen del producto:", errorStorage);
-      alert("No se pudo subir la imagen del producto.");
+      await alerta("No se pudo subir la imagen del producto.");
       return;
     }
 
@@ -138,7 +138,7 @@ formularioProducto.addEventListener("submit", async (evento) => {
 
     if (errorTabla) {
       console.error("Error al insertar producto en la DB:", errorTabla);
-      alert("La imagen se subió, pero no se pudo registrar el producto.");
+      await alerta("La imagen se subió, pero no se pudo registrar el producto.");
       return;
     }
 
@@ -155,12 +155,12 @@ formularioProducto.addEventListener("submit", async (evento) => {
 
     if (errorInv) {
       console.error("Error al insertar producto en la DB:", errorInv);
-      alert("La imagen se subió, pero no se pudo registrar el producto.");
+      await alerta("La imagen se subió, pero no se pudo registrar el producto.");
       return;
     }
 
     // ÉXITO
-    alert("¡Producto creado con éxito!");
+    await alerta("¡Producto creado con éxito!");
     formularioProducto.reset(); // Resetea inputs, textareas y el select a su estado inicial
     modal.close();
     location.reload();
@@ -243,10 +243,10 @@ tablaBody.addEventListener("click", async (evento) => {
     const idProducto = evento.target.getAttribute("data-id");
 
     // Confirmación nativa antes de borrar de la DB
-    const confirmar = confirm(
+    const aceptado = await confirmar(
       "¿Estás seguro de que deseas eliminar este producto?",
     );
-    if (confirmar) {
+    if (aceptado) {
       await eliminarProducto(idProducto);
     }
   }
@@ -272,7 +272,7 @@ async function eliminarProducto(id) {
 
     if (errorBuscar) {
       console.error("Error al buscar la imagen:", errorBuscar);
-      alert("Error! Autodestrucción inminente. (Al bucars URL)");
+      await alerta("Error! Autodestrucción inminente. (Al bucars URL)");
       return;
     }
 
@@ -297,13 +297,13 @@ async function eliminarProducto(id) {
 
     if (errorTabla) {
       console.error("Error al eliminar de la BD:", errorTabla);
-      alert(
+      await alerta(
         "La imagen se borró, pero no se pudo eliminar el producto de la lista asi que llora.",
       );
       return;
     }
 
-    alert("¡Producto eliminado con éxito!");
+    await alerta("¡Producto eliminado con éxito!");
 
     // Volvemos a cargar la tabla para que se vean los cambios
     cargarProductosEnTabla();
@@ -409,7 +409,7 @@ formularioEditar.addEventListener("submit", async (evento) => {
 
   if (erroresss) {
     console.error("Error al buscar la categoría:", erroresss);
-    alert("No se pudo validar la categoría elegida.");
+    await alerta("No se pudo validar la categoría elegida.");
     return;
   }
 
@@ -435,7 +435,7 @@ formularioEditar.addEventListener("submit", async (evento) => {
         .upload(nombreUnicoArchivo, archivoFisico);
 
       if (errorStorage) {
-        alert("Error en subida.");
+        await alerta("Error en subida.");
         return;
       }
 
@@ -454,11 +454,11 @@ formularioEditar.addEventListener("submit", async (evento) => {
 
     if (errorUpdate) {
       console.error("Error al actualizar:", errorUpdate);
-      alert("No se pudieron guardar los cambios.");
+      await alerta("No se pudieron guardar los cambios.");
       return;
     }
 
-    alert("Producto actualizado con éxito!");
+    await alerta("Producto actualizado con éxito!");
     modalEditar.close();
     cargarProductosEnTabla();
   } catch (err) {

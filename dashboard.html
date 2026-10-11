@@ -11,6 +11,8 @@
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Chart.js: gráficas del dashboard -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script src="verified_sesion.js"></script>
     <script src="dashboard.js" defer></script>
     <link rel="stylesheet" href="tema.css" />
@@ -78,6 +80,17 @@
           <div class="card">
             <h2 id="total-pedidos">0</h2>
             <p>Pedidos</p>
+          </div>
+        </section>
+
+        <section class="charts-container">
+          <div class="chart-box">
+            <h2>Ingresos por pedido</h2>
+            <div class="chart-canvas"><canvas id="grafica-ingresos"></canvas></div>
+          </div>
+          <div class="chart-box">
+            <h2>Productos más vendidos</h2>
+            <div class="chart-canvas"><canvas id="grafica-productos"></canvas></div>
           </div>
         </section>
 

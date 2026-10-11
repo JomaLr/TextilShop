@@ -99,7 +99,7 @@ tbodyInventario.addEventListener("click", async (evento) => {
 
     // Validamos que sea un número válido y que no sea negativo
     if (isNaN(nuevoStock) || nuevoStock < 0) {
-      alert("Por favor, introduce un número entero válido mayor o igual a 0.");
+      await alerta("Por favor, introduce un número entero válido mayor o igual a 0.");
       return;
     }
 
@@ -112,11 +112,11 @@ tbodyInventario.addEventListener("click", async (evento) => {
 
       if (error) {
         console.error("Error al actualizar el stock en Supabase:", error);
-        alert("No se pudo actualizar el stock en la base de datos.");
+        await alerta("No se pudo actualizar el stock en la base de datos.");
         return;
       }
 
-      alert("¡Stock actualizado con éxito!");
+      await alerta("¡Stock actualizado con éxito!");
 
       // Refrescamos visualmente la tabla llamando a tu función original
       cargarProductosEnTabla();
