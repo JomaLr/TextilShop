@@ -60,7 +60,7 @@ export class Chatbot {
         ) {
           return "Si tu paquete o pedido no ha llegado dentro del plazo estimado, escríbenos a <a href='contacto.html'>Contacto</a> con tu número de guía para rastrearlo.";
         } else if (
-          /\b(error|errores|problema|problemas|fallo|falla|no (se )?reconoce|cargo|deposito|depositar|d[oó]nde deposito)\b.*\b(pago|pagos|tarjeta|tarjetas|compra|comprar)?\b/i.test(
+          /\b(cobraste|error|errores|problema|problemas|fallo|falla|no (se )?reconoce|cargo|deposito|depositar|d[oó]nde deposito)\b.*\b(mal|pago|pagos|tarjeta|tarjetas|compra|comprar)?\b/i.test(
             orden,
           )
         ) {
@@ -267,6 +267,13 @@ export class Chatbot {
           return "Chill bro, chill. :B";
         } else if (/^\s*(no|nop|nope)\s*$/i.test(orden)) {
           return ".-.";
+        } else if (/^\s*(si|sip)\s*$/i.test(orden)) {
+          return "A bueno. 👍";
+        } else if (/\b(yunetzi|yunetzy)\b/i.test(orden)) {
+          return {
+            texto: "...",
+            audio: "cancion",
+          };
         } else if (/\b(perdon|siento|disculpa|que bien)\b/i.test(orden)) {
           return "Don´t Worry Be Happy. U-U";
         } else if (/\b(quien|que)\b.*\b(eres|haces)\b/i.test(orden)) {
