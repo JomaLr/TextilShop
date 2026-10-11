@@ -64,7 +64,7 @@ formRegistro.addEventListener("submit", async (evento) => {
     asuntoInput === "" ||
     messageInput === ""
   ) {
-    alert("Todos los campos son obligatorios y no pueden estar vacíos!");
+    await alerta("Todos los campos son obligatorios y no pueden estar vacíos!");
     return; // Este return rompe la función y evita que se ejecute el INSERT
   }
 
@@ -77,13 +77,14 @@ formRegistro.addEventListener("submit", async (evento) => {
 
   // Funcion para enviar el correo
   emailjs.send("service_8w9z5hj", "template_c9pxzbp", parametros).then(
-    function (response) {
-      alert("¡Correo enviado con exito, Gracias por su preferencia!");
+    async function (response) {
+      await alerta("¡Correo enviado con exito, Gracias por su preferencia!");
       formRegistro.reset(); // Limpiamos los campos del formulario
     },
-    function (error) {
+    async function (error) {
       console.error("Error: ", error);
-      alert("Error: " + JSON.stringify(error));
+      await alerta("Error: " + JSON.stringify(error));
     },
   );
 });
+
