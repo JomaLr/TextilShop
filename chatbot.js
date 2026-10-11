@@ -52,25 +52,25 @@ export class Chatbot {
             orden,
           )
         ) {
-          return 'Desde <a href="/login.html">Mi perfil</a> puedes consultar tus pedidos y ahí mismo puedes consultar el seguimiento de tu compra.';
+          return 'Desde <a href="login.html">Mi perfil</a> puedes consultar tus pedidos y ahí mismo puedes consultar el seguimiento de tu compra.';
         } else if (
           /\b(no (ha|ah )?llegado|no llego|no me llego|no ha llegado mi|no llego mi|atrasado|retrasado)\b/i.test(
             orden,
           )
         ) {
-          return "Si tu paquete o pedido no ha llegado dentro del plazo estimado, escríbenos a <a href='/contacto.html'>Contacto</a> con tu número de guía para rastrearlo.";
+          return "Si tu paquete o pedido no ha llegado dentro del plazo estimado, escríbenos a <a href='contacto.html'>Contacto</a> con tu número de guía para rastrearlo.";
         } else if (
           /\b(error|errores|problema|problemas|fallo|falla|no (se )?reconoce|cargo|deposito|depositar|d[oó]nde deposito)\b.*\b(pago|pagos|tarjeta|tarjetas|compra|comprar)?\b/i.test(
             orden,
           )
         ) {
-          return "Para dudas con pagos, depósitos, errores en pago o cargos no reconocidos, por favor comunícate con nosotros a traves de <a href='/contacto.html'>Contacto</a>, con tu comprobante.";
+          return "Para dudas con pagos, depósitos, errores en pago o cargos no reconocidos, por favor comunícate con nosotros a traves de <a href='contacto.html'>Contacto</a>, con tu comprobante.";
         } else if (
           /\b(no (me )?deja|error|errores|problema|falla|no puedo)\b.*\b(comprar|hacer la compra|pagar|finalizar|procesar)\b/i.test(
             orden,
           )
         ) {
-          return "Si tienes inconvenientes para finalizar tu compra, por favor comunícate con nosotros a traves de <a href='/contacto.html'>Contacto</a>, para ayudarte a procesarla.";
+          return "Si tienes inconvenientes para finalizar tu compra, por favor comunícate con nosotros a traves de <a href='contacto.html'>Contacto</a>, para ayudarte a procesarla.";
         } else if (
           /\b(precio|precios|costo|costos|cu[aá]nto cuesta|cu[aá]nto valen|cu[aá]nto sale|promedio|vale|valen)\b/i.test(
             orden,
@@ -88,13 +88,13 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Manejamos marca propia y prendas de fabricación 100% nacional en TextilShop. Para patrocinios o colaboraciones contáctanos por <a href='/contacto.html'>Contacto</a>.";
+          return "Manejamos marca propia y prendas de fabricación 100% nacional en TextilShop. Para patrocinios o colaboraciones contáctanos por <a href='contacto.html'>Contacto</a>.";
         } else if (
           /\b(reembolso|reembolsos|reembolsar|devoluci[oó]n de dinero)\b/i.test(
             orden,
           )
         ) {
-          return "Tienes los primeros 3 días después de haber recibido tu pedido para reembolsarlo comunicándote con nosotros a traves de <a href='/contacto.html'>Contacto</a>.";
+          return "Tienes los primeros 3 días después de haber recibido tu pedido para reembolsarlo comunicándote con nosotros a traves de <a href='contacto.html'>Contacto</a>.";
         } else if (/\b(colores?|tonos?|tonalidades?|estilos?)\b/i.test(orden)) {
           return "Puedes personalizar cualquier prenda a tu gusto y ver los colores disponibles en sus detalles.";
         } else if (/\b(carrito|bolsa)\b/i.test(orden)) {
@@ -104,7 +104,7 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Renovamos catálogo y stock de productos cada mes. <br>¡Mantente al pendiente de la sección de <a href='/tienda.html?categoria=Novedades'>Novedades</a> !";
+          return "Renovamos catálogo y stock de productos cada mes. <br>¡Mantente al pendiente de la sección de <a href='tienda.html?categoria=Novedades'>Novedades</a> !";
         } else if (
           /\b(paqueter[ií]as?|flete|env[ií]an por|agencia)\b/i.test(orden)
         ) {
@@ -114,7 +114,7 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Te encuentras actualmente en nuestro sitio web oficial <a href='/index.html'>TextilShop</a> para realizar tus compras!!!";
+          return "Te encuentras actualmente en nuestro sitio web oficial <a href='index.html'>TextilShop</a> para realizar tus compras!!!";
         } else if (
           /\b(cu[aá]l es mi talla|gu[ií]a de tallas|saber mi talla|medidas)\b/i.test(
             orden,
@@ -151,13 +151,13 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Puedes solicitar devoluciones dentro de los primeros 15 días después de recibir tu pedido, comunicate con nosotros a traves de <a href='/contacto.html'>Contacto</a>.";
+          return "Puedes solicitar devoluciones dentro de los primeros 15 días después de recibir tu pedido, comunicate con nosotros a traves de <a href='contacto.html'>Contacto</a>.";
         } else if (
           /\b(contacto|comunicarme|tel[eé]fono|n[uú]mero|correo|soporte|atenci[oó]n|horario|horarios)\b/i.test(
             orden,
           )
         ) {
-          return "Nuestro número de contacto es +52 56 2185 8657 <br> Cualquier duda con gusto te ayudaremos a traves de <a href='/contacto.html'>Contacto</a>.";
+          return "Nuestro número de contacto es +52 56 2185 8657 <br> Cualquier duda con gusto te ayudaremos a traves de <a href='contacto.html'>Contacto</a>.";
         } else if (
           /\b(talla|tallas|tama[nñ]o|tama[nñ]os|chica|mediana|grande|extragrande|xxl)\b/i.test(
             orden,
@@ -175,7 +175,7 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Te recomiendo visitar la sección de <a href='/tienda.html?categoria=Tendencias'>Tendencias</a> para conocer lo mas vendido de la temporada!";
+          return "Te recomiendo visitar la sección de <a href='tienda.html?categoria=Tendencias'>Tendencias</a> para conocer lo mas vendido de la temporada!";
         } else if (
           /\b(categor[ií]as?|secci[oó]n|secciones|ropa|recomi[eé]ndame|recomiendame|prendas?|pantal[oó]n|pantalones|camisa|camisas|blusa|blusas|vestido|vestidos|gorra|gorras|sudadera|sudaderas|productos?|cat[aá]logo)\b/i.test(
             orden,
@@ -241,7 +241,7 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Vendemos al menudeo directamente en nuestra página web <br> Y manejamos precios de mayoreo a partir de 20 prendas comunicándote con nosotros a traves de <a href='/contacto.html'>Contacto</a>.";
+          return "Vendemos al menudeo directamente en nuestra página web <br> Y manejamos precios de mayoreo a partir de 20 prendas comunicándote con nosotros a traves de <a href='contacto.html'>Contacto</a>.";
         } else if (
           /\b(nacionales|nacional|internacional|internacionales|fuera del pa[ií]s|otro pa[ií]s|extranjero)\b/i.test(
             orden,
@@ -280,7 +280,7 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Cualquier duda, problema o error, comunícate con nosotros a traves de <a href='/contacto.html'>Contacto</a>.";
+          return "Cualquier duda, problema o error, comunícate con nosotros a traves de <a href='contacto.html'>Contacto</a>.";
         } else {
           return "Disculpa pero no he entendido tu pregunta, ¿Puedes escribir tu problema de manera mas general? :)";
         }
