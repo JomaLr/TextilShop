@@ -35,7 +35,7 @@ formularioCategoria.addEventListener("submit", async (evento) => {
   const archivoFisico = inputFoto.files[0];
 
   if (!archivoFisico) {
-    alert("Por favor, selecciona una imagen.");
+    await alerta("Por favor, selecciona una imagen.");
     return;
   }
 
@@ -51,7 +51,7 @@ formularioCategoria.addEventListener("submit", async (evento) => {
 
     if (errorStorage) {
       console.error("Error subida:", errorStorage);
-      alert("No se pudo subir la imagen de la categoría.");
+      await alerta("No se pudo subir la imagen de la categoría.");
       return;
     }
 
@@ -74,14 +74,14 @@ formularioCategoria.addEventListener("submit", async (evento) => {
 
     if (errorTabla) {
       console.error("Error al insertar en la tablaaaaaaaaaaaa:", errorTabla);
-      alert(
+      await alerta(
         "La imagen se subió, pero no se pudo registrar la categoría en la DB.",
       );
       return;
     }
 
     //Si se pudo sss
-    alert("¡Categoría creada con éxito!");
+    await alerta("¡Categoría creada con éxito!");
 
     formularioCategoria.reset(); // Vaciamos los campos del formulario
     modal.close(); // Cerramos el modal
@@ -148,10 +148,10 @@ tablaCatBody.addEventListener("click", async (evento) => {
   // Acción: ELIMINAR
   if (evento.target.classList.contains("delete")) {
     const idCat = evento.target.getAttribute("data-id");
-    const confirmar = confirm(
+    const aceptado = await confirmar(
       "¿Estás seguro de eliminar esta categoría? Esto eliminara TODOS los productos vinculados.",
     );
-    if (confirmar) {
+    if (aceptado) {
       await eliminarCategoria(idCat);
     }
   }
@@ -189,11 +189,11 @@ async function eliminarCategoria(id) {
 
     if (errorTabla) {
       console.error("Error al borrar categoría:", errorTabla);
-      alert("No se pudo eliminar la categoría de la base de datos.");
+      await alerta("No se pudo eliminar la categoría de la base de datos.");
       return;
     }
 
-    alert("¡Categoría e imagen eliminadas con éxito!");
+    await alerta("¡Categoría e imagen eliminadas con éxito!");
     location.reload();
   } catch (err) {
     console.error("Error inesperado al eliminar:", err);
@@ -247,7 +247,7 @@ formularioEditarCat.addEventListener("submit", async (evento) => {
         .upload(nombreUnicoArchivo, archivoFisico);
 
       if (errorStorage) {
-        alert("No se pudo subir la nueva imagen de la categoría.");
+        await alerta("No se pudo subir la nueva imagen de la categoría.");
         return;
       }
 
@@ -266,11 +266,11 @@ formularioEditarCat.addEventListener("submit", async (evento) => {
 
     if (errorUpdate) {
       console.error("Error en update:", errorUpdate);
-      alert("No se pudieron guardar los cambios de la categoría.");
+      await alerta("No se pudieron guardar los cambios de la categoría.");
       return;
     }
 
-    alert("¡Categoría actualizada con éxito!");
+    await alerta("¡Categoría actualizada con éxito!");
     formularioEditarCat.reset();
     modalEditarCat.close();
     location.reload();
@@ -283,3 +283,4 @@ confirm;
 
 // Ejecutamos la función al cargar la página del administrador
 document.addEventListener("DOMContentLoaded", cargarCategoriasEnTabla);
+
