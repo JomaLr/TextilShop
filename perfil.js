@@ -70,7 +70,7 @@ modal.querySelector("form").addEventListener("submit", async (e) => {
 
   const telefono_prueba = formData.get("mi_telefono");
   if (telefono_prueba.length < 10 && telefono_prueba.length > 12) {
-    alert("El numero de telefono debe ser de minimo 10 y maximo 12 digitos.");
+    await alerta("El numero de telefono debe ser de minimo 10 y maximo 12 digitos.");
     return;
   }
 
@@ -92,11 +92,11 @@ modal.querySelector("form").addEventListener("submit", async (e) => {
   //Verificamos el resultado final de la tabla
   if (tablaError) {
     console.error("Error en el INSERT:", tablaError);
-    alert("Error al enviar la informacion: " + tablaError.message);
+    await alerta("Error al enviar la informacion: " + tablaError.message);
   } else {
     console.log("mi_direccion:", formData.get("mi_direccion"));
     console.log("Telefono:", formData.get("mi_telefono"));
-    alert("¡Actualizacion de tu informacion realizada con éxito!");
+    await alerta("¡Actualizacion de tu informacion realizada con éxito!");
     window.location.href = "perfil.html";
   }
 });
@@ -220,12 +220,12 @@ if (boton_logout) {
     const { error } = await supabase_conexion.auth.signOut();
 
     if (!error) {
-      alert("¡Sesión cerrada! Vuelve pronto.");
+      await alerta("¡Sesión cerrada! Vuelve pronto.");
       //Lo mandamos al login ya sin sesion
       localStorage.clear();
       window.location.href = "index.html";
     } else {
-      alert(
+      await alerta(
         "Hubo un error al cerrar sesión: aaaaaaaaaaaaaaaaaaaaa " +
           error.message,
       );
