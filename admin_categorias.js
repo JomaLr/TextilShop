@@ -284,3 +284,4 @@ confirm;
 // Ejecutamos la función al cargar la página del administrador
 document.addEventListener("DOMContentLoaded", cargarCategoriasEnTabla);
 
+
