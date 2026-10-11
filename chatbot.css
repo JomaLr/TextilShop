@@ -1,0 +1,182 @@
+/* 1. Contenedor principal: Lo subimos a 85px para evitar el botón de Accesibilidad */
+#textilshop-chatbot-container {
+  position: fixed;
+  bottom: 85px;
+  right: 20px;
+  z-index: 9999;
+  /* Usamos tipografía limpia para combinar con tu web */
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* 2. Botón flotante para abrir el chat */
+#chatbot-toggle-btn {
+  background-color: #000000; /* Negro (Color secundario) */
+  color: #ffffff; /* Blanco (Color primario) */
+  border: none;
+  padding: 15px 25px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
+}
+
+#chatbot-toggle-btn:hover {
+  background-color: #c59d5f; /* Hover con tu color terciario */
+  transform: scale(1.05);
+}
+
+#chatbot-toggle-btn.hidden {
+  display: none;
+}
+
+/* 3. Ventana del Chat */
+#chatbot-window {
+  width: 350px;
+  height: 520px;
+  background-color: #ffffff; /* Fondo blanco */
+  border: 1px solid #eaeaea; /* Borde sutil, muy moderno */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); /* Sombra elegante */
+  overflow: hidden;
+}
+
+#chatbot-window.hidden {
+  display: none;
+}
+
+/* 4. Cabecera (Header) */
+#chatbot-header {
+  background-color: #000000; /* Negro */
+  color: #ffffff;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+#chatbot-close-btn {
+  background: transparent;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.2s;
+}
+
+#chatbot-close-btn:hover {
+  color: #c59d5f; /* La 'X' se pinta de tu color terciario al pasar el mouse */
+}
+
+/* 5. Área de mensajes */
+#chatbot-messages {
+  flex-grow: 1;
+  background-color: #ffffff;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column; /* Permite alinear los mensajes a izq y der */
+}
+
+/* 6. Estilo de los globos de texto */
+.chat-msg {
+  margin-bottom: 12px;
+  line-height: 1.5;
+  padding: 10px 14px;
+  border-radius: 12px;
+  width: fit-content;
+  max-width: 85%;
+}
+
+/* Da formato al nombre (Ej. > Tu: o > DamianBOT:) */
+.chat-msg strong {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 4px;
+  opacity: 0.6;
+}
+
+/* Mensajes del Usuario */
+.user-msg {
+  background-color: #000000; /* Negro */
+  color: #ffffff; /* Texto blanco */
+  align-self: flex-end; /* A la derecha */
+  border-bottom-right-radius: 2px;
+}
+
+/* Mensajes del Bot */
+.bot-msg {
+  background-color: #f7f7f7; /* Gris muy claro */
+  color: #000000; /* Texto negro */
+  align-self: flex-start; /* A la izquierda */
+  border-bottom-left-radius: 2px;
+  border: 1px solid #eaeaea;
+}
+
+/* 7. Área para escribir */
+#chatbot-input-area {
+  display: flex;
+  padding: 12px;
+  background: #ffffff;
+  border-top: 1px solid #eaeaea;
+}
+
+#chatbot-input {
+  flex-grow: 1;
+  font-family: inherit;
+  font-size: 14px;
+  padding: 10px 15px;
+  border: 1px solid #cccccc;
+  border-radius: 20px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+#chatbot-input:focus {
+  border-color: #c59d5f; /* Borde café/dorado al escribir */
+}
+
+#chatbot-send-btn {
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 50%; /* Botón de enviar redondo */
+  width: 42px;
+  height: 42px;
+  margin-left: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s;
+}
+
+#chatbot-send-btn:hover {
+  background-color: #c59d5f; /* Botón de enviar café/dorado al pasar el mouse */
+}
+
+/* Estilo para los enlaces dentro de las burbujas de chat */
+.chat-msg a {
+  color: #c59d5f; /* Tu color terciario */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.chat-msg a:hover {
+  text-decoration: underline;
+}
+
+/* Si el mensaje es del usuario (negro), asegurarnos de que el enlace se vea bien */
+.user-msg a {
+  color: #ffffff;
+  text-decoration: underline;
+}
