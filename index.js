@@ -42,10 +42,10 @@ async function cargarCat() {
     contenedor.innerHTML = "";
 
     //RECORREMOS las categorias (toda la tabla)
-    categorias.forEach((categorias) => {
+    categorias.forEach((categorias, i) => {
       // Creamos la estructura HTML de la tarjeta inyectando los datos de la DB
       const tarjetaHTML = `
-          <a href="tienda.html?categoria=${categorias.nombre_categoria}">
+          <a href="tienda.html?categoria=${categorias.nombre_categoria}" data-aos="zoom-in" data-aos-delay="${(i % 4) * 100}">
             <div class="category-card">
                 <img src="${categorias.imagen}" alt="Categoria ${categorias.nombre_categoria}">
                 <h3>${categorias.nombre_categoria}</h3>
@@ -55,6 +55,8 @@ async function cargarCat() {
       // Insertamos esta nueva tarjeta adentro del contenedor principal
       contenedor.innerHTML += tarjetaHTML;
     });
+    // Las tarjetas se crean dinámicamente: recalculamos posiciones de AOS
+    if (window.AOS) AOS.refresh();
   } catch (err) {
     console.error("Error inesperado:", err);
   }
@@ -85,6 +87,7 @@ async function cargarproductos() {
     productos.forEach((productos) => {
       // Creamos la estructura HTML de la tarjeta inyectando los datos de la DB
       const panelHTML = `
+            <div class="swiper-slide">
             <div class="product-card">
                 <img src="${productos.imagen}" alt="Producto ${productos.nombre}">
                 <h3>${productos.nombre}</h3>
@@ -93,9 +96,29 @@ async function cargarproductos() {
                   <button>Ver producto</button>
                 </a>
                 </div>
+            </div>
       `;
       // Insertamos esta nueva tarjeta adentro del contenedor principal
       panel.innerHTML += panelHTML;
+    });
+
+    // SWIPER: convertimos las tarjetas en un carrusel
+    if (typeof Swiper === "undefined") {
+      console.error("Swiper no se cargó: revisa la conexión al CDN");
+      return;
+    }
+    new Swiper(".productos-swiper", {
+      slidesPerView: "auto",
+      spaceBetween: 24,
+      centeredSlides: productos.length < 3,
+      grabCursor: true,
+      keyboard: { enabled: true },
+      autoplay: { delay: 4000, disableOnInteraction: true, pauseOnMouseEnter: true },
+      pagination: { el: ".productos-swiper .swiper-pagination", clickable: true },
+      navigation: {
+        nextEl: ".productos-swiper .swiper-button-next",
+        prevEl: ".productos-swiper .swiper-button-prev",
+      },
     });
   } catch (err) {
     console.error("Error inesperado:", err);
@@ -104,3 +127,6 @@ async function cargarproductos() {
 
 // Mandamos a llamar a la función cuando se cargue la página
 cargarproductos();
+
+// AOS: animaciones al hacer scroll
+if (window.AOS) AOS.init({ duration: 800, once: true, offset: 80 });
