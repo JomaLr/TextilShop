@@ -158,7 +158,7 @@ const productSection = document.getElementById("detalles_prod");
 productSection.addEventListener("click", async (evento) => {
   // Si el stock general es menor o igual a cero, bloqueamos cualquier intento por JS
   if (stockDisponibleActual <= 0) {
-    alert("Lo sentimos, este artículo no cuenta con existencias disponibles.");
+    await alerta("Lo sentimos, este artículo no cuenta con existencias disponibles.");
     return;
   }
 
@@ -172,12 +172,12 @@ productSection.addEventListener("click", async (evento) => {
 
     // Validación rigurosa de cantidades solicitadas contra inventario
     if (isNaN(cantidadSeleccionada) || cantidadSeleccionada < 1) {
-      alert("Por favor, ingresa una cantidad válida.");
+      await alerta("Por favor, ingresa una cantidad válida.");
       return;
     }
 
     if (cantidadSeleccionada > stockDisponibleActual) {
-      alert(
+      await alerta(
         `No puedes agregar esa cantidad. Solo quedan ${stockDisponibleActual} unidades libres.`,
       );
       return;
@@ -190,7 +190,7 @@ productSection.addEventListener("click", async (evento) => {
       } = await supabase_conexion.auth.getUser();
 
       if (errorUsuario || !user) {
-        alert("Debes iniciar sesión para agregar productos al carrito.");
+        await alerta("Debes iniciar sesión para agregar productos al carrito.");
         return;
       }
 
@@ -208,11 +208,11 @@ productSection.addEventListener("click", async (evento) => {
 
       if (errorCarrito) {
         console.error("Error al insertar en el carrito:", errorCarrito);
-        alert("No se pudo agregar el producto al carrito.");
+        await alerta("No se pudo agregar el producto al carrito.");
         return;
       }
 
-      alert("Producto agregado al carrito!");
+      await alerta("Producto agregado al carrito!");
       location.reload();
     } catch (err) {
       console.error("Error inesperado en la acción del carrito:", err);
@@ -232,7 +232,7 @@ productSection.addEventListener("click", async (evento) => {
       cantidadSeleccionada < 1 ||
       cantidadSeleccionada > stockDisponibleActual
     ) {
-      alert("Cantidad inválida o superior a las existencias disponibles.");
+      await alerta("Cantidad inválida o superior a las existencias disponibles.");
       return;
     }
 
@@ -243,3 +243,4 @@ productSection.addEventListener("click", async (evento) => {
 
 // Inicializamos la función cuando todo el HTML esté listo
 document.addEventListener("DOMContentLoaded", cargarProducto);
+
