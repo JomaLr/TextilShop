@@ -130,9 +130,11 @@ body{
     gap: 20px;
 
     justify-content: center;
+    flex-wrap: wrap;
 }
 
-.buttons a{
+.buttons a,
+.buttons button{
     padding: 16px 28px;
 
     border-radius: 14px;
@@ -142,6 +144,11 @@ body{
     font-weight: 500;
 
     transition: 0.3s;
+
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
 }
 
 .primary-btn{
