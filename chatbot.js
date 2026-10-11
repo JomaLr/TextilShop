@@ -265,7 +265,7 @@ export class Chatbot {
           /\b(que).*\b(tal)/i.test(orden)
         ) {
           return "Chill bro, chill. :B";
-        } else if (/\b(no|nop|nope)\b/i.test(orden)) {
+        } else if (/^\s*(no|nop|nope)\s*$/i.test(orden)) {
           return ".-.";
         } else if (/\b(perdon|siento|disculpa|que bien)\b/i.test(orden)) {
           return "Don´t Worry Be Happy. U-U";
