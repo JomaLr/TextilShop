@@ -238,7 +238,6 @@ table tr {
 .logo:hover {
   color: purple;
 }
-<<<<<<< HEAD
 
 /* GRÁFICAS (Chart.js) */
 .charts-container {
@@ -264,30 +263,3 @@ table tr {
   position: relative;
   height: 280px;
 }
-=======
-
-/* GRÁFICAS (Chart.js) */
-.charts-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 25px;
-  margin-bottom: 50px;
-}
-
-.chart-box {
-  background-color: white;
-  padding: 25px;
-  border-radius: 20px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.chart-box h2 {
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-}
-
-.chart-canvas {
-  position: relative;
-  height: 280px;
-}
->>>>>>> 632c788342bcc1660aeb7b0031c8d0b882ab3468

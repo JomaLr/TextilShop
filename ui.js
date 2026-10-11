@@ -33,7 +33,6 @@
       extra,
     );
   }
-<<<<<<< HEAD
 
   // Sustituto de alert(): devuelve una promesa que se resuelve al cerrar
   window.alerta = function (mensaje, icono) {
@@ -61,5 +60,3 @@
     return r.isConfirmed;
   };
 })();
-=======
->>>>>>> 632c788342bcc1660aeb7b0031c8d0b882ab3468
