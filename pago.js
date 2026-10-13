@@ -1,38 +1,35 @@
-//Iniciamos la parte para enviar el correo al registrase
+// Iniciamos la parte para enviar el correo al registrase
 emailjs.init("rIUDcgPWkN13PhkIk");
 
-//Configura la conexión con credenciales a Supabase
+// Configura la conexión con credenciales a Supabase
 const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
 
-//Establecemos la conexión
+// Establecemos la conexión
 const supabase_conexion = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
 );
 
+// Inicializar SDK de Mercado Pago con tu Public Key
+const mp = new MercadoPago("TU_PUBLIC_KEY_AQUI", {
+  locale: "es-MX",
+});
+
 // Leemos la URL del navegador
 const parametrosURL = new URLSearchParams(window.location.search);
+const producto_id = parametrosURL.get("checkout");
 
-//Guardamos el valor en 'categoria'
-const producto_id = parametrosURL.get("checkout"); // Esto valdrá el id del producto
-
-// Esta función se ejecuta AUTOMÁTICAMENTE en cuanto carga la página
+// Verificar sesión
 async function verificarSesion() {
-  // Guachamos si hay un token guardado (O sea si hay una sesión)
-  const { data, error } = await supabase_conexion.auth.getSession();
-
-  //Evaluamos si hay una sesión activa
+  const { data } = await supabase_conexion.auth.getSession();
   if (data && data.session !== null) {
-    // El usuario tiene la sesión abierta.
     console.log("Usuario autenticado correctamente:", data.session.user.email);
   } else {
-    //No hay sesión entonces nos quedamos en el Login
     window.location.href = "login.html";
   }
 }
 
-// Ejecutamos la función apenas cargue la pantalla
 verificarSesion();
 
 // Costo estandarizado de envío
@@ -54,7 +51,6 @@ const btnConfirmar = document.getElementById("btn-confirmar-compra");
 // ==========================================
 async function inicializarPago() {
   try {
-    // A. Obtener el usuario activo
     const {
       data: { user },
       error: errorUser,
@@ -69,28 +65,23 @@ async function inicializarPago() {
     idUsuarioLogueado = user.id;
     emailUsuarioLogueado = user.email;
 
-    // B. Rellenar información del usuario desde tu tabla 'usuarios'
-    const { data: infoUsuario, error: errorInfo } = await supabase_conexion
+    const { data: infoUsuario } = await supabase_conexion
       .from("usuarios")
       .select("nombre, direccion")
       .eq("id_usuario", idUsuarioLogueado)
       .single();
 
-    if (!errorInfo && infoUsuario) {
+    if (infoUsuario) {
       document.getElementById("input-nombre").value = infoUsuario.nombre || "";
       document.getElementById("input-direccion").value =
         infoUsuario.direccion || "";
     }
 
-    // C. Determinar si viene de un producto único o del carrito completo
-    const parametrosURL = new URLSearchParams(window.location.search);
     const idProductoDirecto = parametrosURL.get("checkout");
 
     if (idProductoDirecto) {
-      // Flujo: "Comprar ahora" -> Consultamos la información de ese producto específico
       await cargarProductoUnico(parseInt(idProductoDirecto));
     } else {
-      // Flujo: "Desde el carrito" -> Procesamos los elementos guardados en su tabla de la DB
       await cargarProductosDesdeCarrito();
     }
   } catch (err) {
@@ -99,10 +90,8 @@ async function inicializarPago() {
 }
 
 // ==========================================
-// 2. RECUPERACIÓN DE DATOS (MÉTODOS DE COMPRA)
+// 2. RECUPERACIÓN DE DATOS
 // ==========================================
-
-// Flujo A: Cargar el artículo de compra directa
 async function cargarProductoUnico(idProducto) {
   const { data: producto, error } = await supabase_conexion
     .from("productos")
@@ -115,21 +104,19 @@ async function cargarProductoUnico(idProducto) {
     return;
   }
 
-  // Estructuramos un formato homogéneo para la lista de compras
   productosAComprar = [
     {
       id_producto: producto.id_producto,
       nombre: producto.nombre,
       precio: producto.precio,
       imagen: producto.imagen,
-      cantidad: 1, // Por defecto en compra directa es 1 unidad
+      cantidad: 1,
     },
   ];
 
   renderizarYCalcular();
 }
 
-// Flujo B: Cargar todo lo que el usuario acumuló en la tabla de carritos
 async function cargarProductosDesdeCarrito() {
   const { data: registrosCarrito, error } = await supabase_conexion
     .from("carritos")
@@ -152,7 +139,6 @@ async function cargarProductosDesdeCarrito() {
     return;
   }
 
-  // Homogeneizamos la información mapeando los objetos hijos
   productosAComprar = registrosCarrito.map((item) => ({
     id_producto: item.id_producto,
     nombre: item.productos.nombre,
@@ -188,33 +174,58 @@ function renderizarYCalcular() {
 
   totalFinal = subtotalFinal + COSTO_ENVIO;
 
-  // Actualizamos visualmente la interfaz
-  document.getElementById("pago-subtotal").textContent =
-    `$${subtotalFinal} MXN`;
+  document.getElementById("pago-subtotal").textContent = `$${subtotalFinal} MXN`;
   document.getElementById("pago-envio").textContent = `$${COSTO_ENVIO} MXN`;
   document.getElementById("pago-total").textContent = `$${totalFinal} MXN`;
 }
 
 // ==========================================
-// 4. TRANSACCIÓN: REGISTRO DE COMPRA E INVENTARIOS
+// 4. GENERACIÓN DE PREFERENCIA DE MERCADO PAGO
+// ==========================================
+async function crearPreferenciaMercadoPago() {
+  const itemsMP = productosAComprar.map((p) => ({
+    title: p.nombre,
+    unit_price: Number(p.precio),
+    quantity: Number(p.cantidad),
+    currency_id: "MXN",
+  }));
+
+  // Agregamos el costo de envío como un item adicional
+  itemsMP.push({
+    title: "Costo de Envío",
+    unit_price: COSTO_ENVIO,
+    quantity: 1,
+    currency_id: "MXN",
+  });
+
+  // Petición a tu endpoint o Edge Function para obtener el preferenceId
+  const respuesta = await fetch("HTTPS_TU_BACKEND_O_EDGE_FUNCTION/crear-preferencia", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items: itemsMP }),
+  });
+
+  const data = await respuesta.json();
+  return data.id; // Retorna el preferenceId generado en el servidor
+}
+
+// ==========================================
+// 5. TRANSACCIÓN: REGISTRO DE COMPRA Y BOTÓN MP
 // ==========================================
 btnConfirmar.addEventListener("click", async () => {
   const nombreCliente = document.getElementById("input-nombre").value.trim();
-  const direccionCliente = document
-    .getElementById("input-direccion")
-    .value.trim();
+  const direccionCliente = document.getElementById("input-direccion").value.trim();
 
   if (!nombreCliente || !direccionCliente) {
     await alerta("Por favor, completa tus datos de envío antes de confirmar.");
     return;
   }
 
-  // Deshabilitamos el botón para evitar doble clic accidental en transacciones de dinero
   btnConfirmar.disabled = true;
-  btnConfirmar.textContent = "Procesando...";
+  btnConfirmar.textContent = "Generando pago...";
 
   try {
-    // FASE A: Crear la cabecera en la tabla 'tickets'
+    // 1. Crear el ticket en Supabase
     const { data: ticketCreado, error: errorTicket } = await supabase_conexion
       .from("tickets")
       .insert([{ id_usuario: idUsuarioLogueado, total: totalFinal }])
@@ -222,16 +233,15 @@ btnConfirmar.addEventListener("click", async () => {
       .single();
 
     if (errorTicket || !ticketCreado) {
-      throw new Error("Fallo crítico al generar el ticket de compra.");
+      throw new Error("Fallo al generar el ticket de compra.");
     }
 
-    const idTicketNuevo = ticketCreado.id_ticket; // Asumiendo que tu PK auto-incremental se llama id_ticket
+    const idTicketNuevo = ticketCreado.id_ticket;
 
-    // FASE B: Iterar cada artículo comprado para registrar detalles y descontar del inventario
+    // 2. Registrar detalles y actualizar inventario
     for (const prod of productosAComprar) {
       const costoTotalArticulo = prod.precio * prod.cantidad;
 
-      // 1. Insertar el renglón correspondiente en 'tickets_detalles'
       const { error: errorDetalle } = await supabase_conexion
         .from("tickets_detalles")
         .insert([
@@ -243,13 +253,10 @@ btnConfirmar.addEventListener("click", async () => {
           },
         ]);
 
-      if (errorDetalle)
-        throw new Error(
-          `Fallo al registrar el desglose del producto ${prod.nombre}`,
-        );
+      if (errorDetalle) {
+        throw new Error(`Error en el desglose del producto ${prod.nombre}`);
+      }
 
-      // 2. Descontar stock nativamente de la tabla 'inventarios'
-      // Consultamos existencias reales actuales
       const { data: inventarioActual } = await supabase_conexion
         .from("inventarios")
         .select("stock")
@@ -257,41 +264,45 @@ btnConfirmar.addEventListener("click", async () => {
         .single();
 
       const stockActual = inventarioActual ? inventarioActual.stock : 0;
-      const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad); // Evitamos números negativos
+      const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad);
 
-      const { error: errorStock } = await supabase_conexion
+      await supabase_conexion
         .from("inventarios")
         .update({ stock: nuevoStockCalculado })
         .eq("id_producto", prod.id_producto);
-
-      if (errorStock)
-        throw new Error(
-          `Fallo crítico al restar existencias de ${prod.nombre}`,
-        );
     }
 
-    // FASE C: Limpiar el carrito del usuario en la DB si la compra provino de allí
-    const parametrosURL = new URLSearchParams(window.location.search);
+    // 3. Limpiar carrito
     if (!parametrosURL.get("checkout")) {
       await supabase_conexion
         .from("carritos")
         .delete()
         .eq("id_usuario", idUsuarioLogueado);
 
-      // Limpiamos también el localStorage preventivo anterior
       localStorage.removeItem("orden_checkout");
     }
 
-    // FASE D: Notificación por EmailJS
+    // 4. Enviar notificación por email
     await enviarCorreoConfirmacion(
       nombreCliente,
       idTicketNuevo,
       direccionCliente,
     );
 
-    // FASE E: Finalización exitosa y redirección
-    await alerta("¡Compra confirmada con éxito! Muchísimas gracias.");
-    window.location.href = `gracias-compra.html?compra=${idTicketNuevo}`;
+    // 5. Crear la preferencia de Mercado Pago y renderizar el botón
+    const preferenceId = await crearPreferenciaMercadoPago();
+
+    // Ocultamos el botón principal de confirmar
+    btnConfirmar.style.display = "none";
+
+    // Inicializamos el Wallet Brick de Mercado Pago
+    mp.bricks().create("wallet", "wallet_container", {
+      initialization: {
+        preferenceId: preferenceId,
+        redirectMode: "modal", // O "self" para redirigir directamente
+      },
+    });
+
   } catch (err) {
     console.error(err);
     await alerta("Ocurrió un inconveniente procesando tu pedido: " + err.message);
@@ -301,10 +312,9 @@ btnConfirmar.addEventListener("click", async () => {
 });
 
 // ==========================================
-// 5. INTEGRACIÓN CON EMAILJS (ENVÍO DEL CORREO)
+// 6. INTEGRACIÓN CON EMAILJS
 // ==========================================
 async function enviarCorreoConfirmacion(nombreCliente, idTicket, direccion) {
-  // Construimos una lista en texto legible con los productos comprados
   let resumenProductosTexto = productosAComprar
     .map(
       (p) =>
@@ -312,7 +322,6 @@ async function enviarCorreoConfirmacion(nombreCliente, idTicket, direccion) {
     )
     .join("\n");
 
-  // Parámetros exactos que vas a mapear en tu plantilla dentro del panel de EmailJS
   const parametrosPlantilla = {
     to_email: emailUsuarioLogueado,
     to_name: nombreCliente,
@@ -323,22 +332,16 @@ async function enviarCorreoConfirmacion(nombreCliente, idTicket, direccion) {
   };
 
   try {
-    // Sustituye con tus ID reales de tu cuenta de EmailJS
     await emailjs.send(
-      "service_8w9z5hj", // Reemplaza con tu Service ID de EmailJS
-      "template_7hg3qes", // Reemplaza con tu Template ID de EmailJS
+      "service_8w9z5hj",
+      "template_7hg3qes",
       parametrosPlantilla,
-      "rIUDcgPWkN13PhkIk", // Reemplaza con tu Public Key de EmailJS
+      "rIUDcgPWkN13PhkIk",
     );
     console.log("Notificación por correo electrónico enviada con éxito.");
   } catch (error) {
-    // No bloqueamos la experiencia del cliente si falla el servicio externo de correo, solo lo reportamos
-    console.error(
-      "No se pudo enviar el correo electrónico de confirmación:",
-      error,
-    );
+    console.error("No se pudo enviar el correo de confirmación:", error);
   }
 }
 
-// Inicializar al cargar el DOM
 document.addEventListener("DOMContentLoaded", inicializarPago);

@@ -17,45 +17,48 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="verlogin.js"></script>
     <script src="menu.js" defer></script>
+    
+    <!-- SDK OFICIAL DE MERCADO PAGO AGREGADO AQUÍ -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
     <script src="pago.js" defer></script>
     <link rel="stylesheet" href="tema.css" />
     <script src="tema.js" defer></script>
     <script src="accesibilidad.js"></script>
     <link rel="stylesheet" href="accesibilidad.css">
-   
   </head>
   <body>
     <!-- NAVBAR -->
-<header>
-  <nav class="navbar">
-    <a href="index.html" class="logo"> TextilShop </a>
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo"> TextilShop </a>
 
-    <button
-      class="menu-toggle"
-      id="menu-toggle"
-      type="button"
-      aria-label="Abrir menú"
-      aria-expanded="false"
-    >
-      ☰
-    </button>
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-label="Abrir menú"
+          aria-expanded="false"
+        >
+          ☰
+        </button>
 
-    <div class="menu-contenedor" id="menu-contenedor">
-      <ul class="nav-links">
-        <li><a href="index.html">Inicio</a></li>
-        <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
-        <li><a href="tienda.html?categoria=Tendencias">Tendencias</a></li>
-        <li><a href="contacto.html">Contacto</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-      </ul>
+        <div class="menu-contenedor" id="menu-contenedor">
+          <ul class="nav-links">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="tienda.html?categoria=Novedades">Novedades</a></li>
+            <li><a href="tienda.html?categoria=Tendencias">Tendencias</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+          </ul>
 
-      <div class="nav-icons">
-        <a href="login.html" id="logearse">Login</a>
-        <a href="carrito.html" aria-label="Carrito">🛒</a>
-      </div>
-    </div>
-  </nav>
-</header>
+          <div class="nav-icons">
+            <a href="login.html" id="logearse">Login</a>
+            <a href="carrito.html" aria-label="Carrito">🛒</a>
+          </div>
+        </div>
+      </nav>
+    </header>
 
     <!-- CONTENIDO -->
     <section class="payment-section">
@@ -64,46 +67,51 @@
         <h1>Finalizar Compra</h1>
 
         <!-- DIRECCION -->
-<div class="form-container">
-  <h2>Dirección de envío</h2>
+        <div class="form-container">
+          <h2>Dirección de envío</h2>
 
-  <div class="input-group">
-    <label>Nombre completo</label>
-    <input type="text" id="input-nombre" placeholder="Ingresa tu nombre" />
-  </div>
+          <div class="input-group">
+            <label>Nombre completo</label>
+            <input type="text" id="input-nombre" placeholder="Ingresa tu nombre" />
+          </div>
 
-  <div class="input-group">
-    <label>Dirección</label>
-    <input type="text" id="input-direccion" placeholder="Calle y número" />
-  </div>
+          <div class="input-group">
+            <label>Dirección</label>
+            <input type="text" id="input-direccion" placeholder="Calle y número" />
+          </div>
 
-  <div class="double-input"></div>
-</div>
+          <div class="double-input"></div>
+        </div>
 
-<div class="payment-summary">
-  <h2>Resumen del pedido</h2>
+        <div class="payment-summary">
+          <h2>Resumen del pedido</h2>
 
-  <div id="lista-productos-pago">
-    </div>
+          <div id="lista-productos-pago"></div>
 
-  <div class="summary-details">
-    <div>
-      <p>Subtotal</p>
-      <span id="pago-subtotal">$0 MXN</span>
-    </div>
+          <div class="summary-details">
+            <div>
+              <p>Subtotal</p>
+              <span id="pago-subtotal">$0 MXN</span>
+            </div>
 
-    <div>
-      <p>Envío</p>
-      <span id="pago-envio">$150 MXN</span> </div>
+            <div>
+              <p>Envío</p>
+              <span id="pago-envio">$150 MXN</span>
+            </div>
 
-    <div class="total">
-      <p>Total</p>
-      <span id="pago-total">$0 MXN</span>
-    </div>
-  </div>
+            <div class="total">
+              <p>Total</p>
+              <span id="pago-total">$0 MXN</span>
+            </div>
+          </div>
 
-  <button id="btn-confirmar-compra">Confirmar Compra</button>
-</div>
+          <!-- BOTÓN TRADICIONAL Y CONTENEDOR DE MERCADO PAGO -->
+          <button id="btn-confirmar-compra">Confirmar Compra</button>
+          
+          <!-- AQUÍ SE RENDERIZARÁ EL BOTÓN AZUL DE MERCADO PAGO CUANDO GENERES LA PREFERENCIA -->
+          <div id="wallet_container" style="margin-top: 15px;"></div>
+        </div>
+      </div>
     </section>
 
     <!-- FOOTER -->
@@ -112,6 +120,5 @@
     </footer>
   </body>
 </html>
-
 
 
