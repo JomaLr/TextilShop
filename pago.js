@@ -208,10 +208,20 @@ async function crearPreferenciaMercadoPago() {
   });
 
   const data = await respuesta.json();
-  if (!respuesta.ok || !data.id) {
-    throw new Error(data.error || "No se pudo obtener la preferencia de pago");
+  console.log("Respuesta de Edge Function:", data);
+
+  // 1. Si devuelve 'id' o 'preferenceId'
+  if (data.id) return { preferenceId: data.id, initPoint: data.init_point };
+  if (data.preferenceId) return { preferenceId: data.preferenceId, initPoint: data.init_point };
+
+  // 2. Si devuelve 'init_point', extraemos el ID de la URL
+  if (data.init_point) {
+    const urlObj = new URL(data.init_point);
+    const prefId = urlObj.searchParams.get("pref_id");
+    return { preferenceId: prefId, initPoint: data.init_point };
   }
-  return data.id;
+
+  throw new Error("No se encontró el ID de preferencia en la respuesta.");
 }
 
 // ==========================================
@@ -227,7 +237,7 @@ btnConfirmar.addEventListener("click", async () => {
   }
 
   btnConfirmar.disabled = true;
-  btnConfirmar.textContent = "Generando pago...";
+  btnConfirmar.textContent = "Procesando pedido...";
 
   try {
     // 1. Crear el ticket en Supabase
@@ -294,19 +304,29 @@ btnConfirmar.addEventListener("click", async () => {
       direccionCliente,
     );
 
-    // 5. Crear la preferencia de Mercado Pago y renderizar el botón
-    const preferenceId = await crearPreferenciaMercadoPago();
+    // 5. Renderizar botón de Mercado Pago o Redirigir
+    try {
+      const resultadoMP = await crearPreferenciaMercadoPago();
 
-    // Ocultamos el botón principal de confirmar
-    btnConfirmar.style.display = "none";
+      if (resultadoMP.preferenceId) {
+        btnConfirmar.style.display = "none";
 
-    // Inicializamos el Wallet Brick de Mercado Pago
-    mp.bricks().create("wallet", "wallet_container", {
-      initialization: {
-        preferenceId: preferenceId,
-        redirectMode: "modal",
-      },
-    });
+        // Renderiza el Wallet Brick en #wallet_container
+        mp.bricks().create("wallet", "wallet_container", {
+          initialization: {
+            preferenceId: resultadoMP.preferenceId,
+            redirectMode: "modal",
+          },
+        });
+      } else if (resultadoMP.initPoint) {
+        // Redirección directa al checkout si no se pudo renderizar el brick
+        window.location.href = resultadoMP.initPoint;
+      }
+    } catch (errorMP) {
+      console.warn("Error en la pasarela externa, redirigiendo a confirmación:", errorMP);
+      await alerta("¡Pedido registrado con éxito! Te hemos enviado un correo de confirmación.");
+      window.location.href = `gracias-compra.html?compra=${idTicketNuevo}`;
+    }
 
   } catch (err) {
     console.error(err);
