@@ -1,9 +1,10 @@
-// Iniciamos la parte para enviar el correo al registrase
+// Iniciamos la parte para enviar el correo al registrarse
 emailjs.init("rIUDcgPWkN13PhkIk");
 
 // Configura la conexión con credenciales a Supabase
 const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
+
 // Establecemos la conexión
 const supabase_conexion = supabase.createClient(
   SUPABASE_URL,
@@ -11,7 +12,7 @@ const supabase_conexion = supabase.createClient(
 );
 
 // Inicializar SDK de Mercado Pago con tu Public Key
-const mp = new MercadoPago("TU_PUBLIC_KEY_AQUI", {
+const mp = new MercadoPago("APP_USR-a657ff2f-2c57-48fc-8145-aa5eba1cf808", {
   locale: "es-MX",
 });
 
@@ -189,7 +190,6 @@ async function crearPreferenciaMercadoPago() {
     currency_id: "MXN",
   }));
 
-  // Agregamos el costo de envío como un item adicional
   itemsMP.push({
     title: "Costo de Envío",
     unit_price: COSTO_ENVIO,
@@ -197,15 +197,21 @@ async function crearPreferenciaMercadoPago() {
     currency_id: "MXN",
   });
 
-  // Petición a tu endpoint o Edge Function para obtener el preferenceId
-  const respuesta = await fetch("HTTPS_TU_BACKEND_O_EDGE_FUNCTION/crear-preferencia", {
+  const respuesta = await fetch("https://ytqxpnuulmyktsxhpyod.supabase.co/functions/v1/create-preference", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+    },
     body: JSON.stringify({ items: itemsMP }),
   });
 
   const data = await respuesta.json();
-  return data.id; // Retorna el preferenceId generado en el servidor
+  if (!respuesta.ok || !data.id) {
+    throw new Error(data.error || "No se pudo obtener la preferencia de pago");
+  }
+  return data.id;
 }
 
 // ==========================================
@@ -298,7 +304,7 @@ btnConfirmar.addEventListener("click", async () => {
     mp.bricks().create("wallet", "wallet_container", {
       initialization: {
         preferenceId: preferenceId,
-        redirectMode: "modal", // O "self" para redirigir directamente
+        redirectMode: "modal",
       },
     });
 
@@ -316,8 +322,7 @@ btnConfirmar.addEventListener("click", async () => {
 async function enviarCorreoConfirmacion(nombreCliente, idTicket, direccion) {
   let resumenProductosTexto = productosAComprar
     .map(
-      (p) =>
-        `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`,
+      (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`,
     )
     .join("\n");
 
