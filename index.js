@@ -114,7 +114,11 @@ async function cargarproductos() {
       grabCursor: true,
       keyboard: { enabled: true },
       autoplay: { delay: 4000, disableOnInteraction: true, pauseOnMouseEnter: true },
-      pagination: { el: ".productos-swiper .swiper-pagination", clickable: true },
+      pagination: {
+        el: ".productos-swiper .swiper-pagination",
+        clickable: true,
+        dynamicBullets: true, // pocos puntos aunque haya muchos productos
+      },
       navigation: {
         nextEl: ".productos-swiper .swiper-button-next",
         prevEl: ".productos-swiper .swiper-button-prev",
