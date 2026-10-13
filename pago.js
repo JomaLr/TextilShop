@@ -182,7 +182,7 @@ function renderizarYCalcular() {
 // ==========================================
 // 4. GENERACIÓN DE PREFERENCIA DE MERCADO PAGO
 // ==========================================
-async function crearPreferenciaMercadoPago() {
+async function obtenerUrlMercadoPago() {
   const itemsMP = productosAComprar.map((p) => ({
     title: p.nombre,
     unit_price: Number(p.precio),
@@ -209,22 +209,21 @@ async function crearPreferenciaMercadoPago() {
 
   const data = await respuesta.json();
 
-  let prefId = data.id || data.preferenceId;
-
-  if (!prefId && data.init_point) {
-    try {
-      const urlObj = new URL(data.init_point);
-      prefId = urlObj.searchParams.get("pref_id");
-    } catch (e) {
-      console.warn("No se pudo extraer pref_id de init_point", e);
-    }
+  // Si trae el init_point devuelto por tu Edge Function, retornamos la URL
+  if (data.init_point) {
+    return data.init_point;
   }
 
-  return { preferenceId: prefId, initPoint: data.init_point };
+  // Si trae el id, armamos la URL de checkout
+  if (data.id) {
+    return `https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=${data.id}`;
+  }
+
+  throw new Error("La Edge Function no entregó un punto de pago válido.");
 }
 
 // ==========================================
-// 5. TRANSACCIÓN: REGISTRO DE COMPRA Y NAVEGACIÓN
+// 5. TRANSACCIÓN: REGISTRO DE COMPRA Y REDIRECCIÓN A MP
 // ==========================================
 btnConfirmar.addEventListener("click", async () => {
   const nombreCliente = document.getElementById("input-nombre").value.trim();
@@ -236,7 +235,7 @@ btnConfirmar.addEventListener("click", async () => {
   }
 
   btnConfirmar.disabled = true;
-  btnConfirmar.textContent = "Procesando pedido...";
+  btnConfirmar.textContent = "Redirigiendo a Mercado Pago...";
 
   try {
     // 1. Crear el ticket en Supabase
@@ -303,32 +302,15 @@ btnConfirmar.addEventListener("click", async () => {
       direccionCliente,
     );
 
-    // 5. Intentar integración de pago o ir a confirmación
-    try {
-      const resMP = await crearPreferenciaMercadoPago();
-
-      if (resMP.preferenceId) {
-        btnConfirmar.style.display = "none";
-        mp.bricks().create("wallet", "wallet_container", {
-          initialization: {
-            preferenceId: resMP.preferenceId,
-            redirectMode: "modal",
-          },
-        });
-      } else if (resMP.initPoint) {
-        window.location.href = resMP.initPoint;
-      } else {
-        throw new Error("Sin datos de preferencia válidos.");
-      }
-    } catch (errMP) {
-      console.warn("Mercado Pago no disponible, finalizando pedido:", errMP);
-      await alerta("¡Pedido registrado exitosamente! Te enviamos la confirmación a tu correo.");
-      window.location.href = `gracias-compra.html?compra=${idTicketNuevo}`;
-    }
+    // 5. Obtener la URL de pago de la API y redirigir
+    const urlPagoMercadoPago = await obtenerUrlMercadoPago();
+    
+    // Redirección inmediata a la ventana de cobro de Mercado Pago
+    window.location.href = urlPagoMercadoPago;
 
   } catch (err) {
     console.error(err);
-    await alerta("Ocurrió un inconveniente procesando tu pedido: " + err.message);
+    await alerta("Ocurrió un inconveniente con el pago: " + err.message);
     btnConfirmar.disabled = false;
     btnConfirmar.textContent = "Confirmar Compra";
   }
