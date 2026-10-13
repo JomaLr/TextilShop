@@ -4,7 +4,6 @@ emailjs.init("rIUDcgPWkN13PhkIk");
 // Configura la conexión con credenciales a Supabase
 const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
-
 // Establecemos la conexión
 const supabase_conexion = supabase.createClient(
   SUPABASE_URL,
