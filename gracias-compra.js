@@ -11,7 +11,7 @@ const supabase_cliente = supabase.createClient(
 );
 
 async function procesarPagoYMostrarTicket() {
-  console.log("Procesando compra directamente desde la tabla 'entradas'...");
+  console.log("Procesando compra directamente desde la tabla 'tickets'...");
   let idTicket = null;
   let datosUsuarioCompra = null;
 
@@ -26,16 +26,16 @@ async function procesarPagoYMostrarTicket() {
 
     console.log("Usuario autenticado:", user.email);
 
-    // 2. Consultar el pedido más reciente en la tabla 'entradas' sin usar .single()
+    // 2. Consultar el pedido más reciente en la tabla 'tickets'
     const { data: pedidos, error: pedidoError } = await supabase_cliente
-      .from("entradas")
+      .from("tickets")
       .select("id_ticket, total")
       .eq("id_usuario", user.id)
       .order("id_ticket", { ascending: false })
       .limit(1);
 
     if (pedidoError || !pedidos || pedidos.length === 0) {
-      console.error("No se encontró ningún pedido reciente en 'entradas':", pedidoError);
+      console.error("No se encontró ningún pedido reciente en 'tickets':", pedidoError);
     } else {
       const ultimoPedido = pedidos[0];
       idTicket = ultimoPedido.id_ticket;
@@ -77,7 +77,7 @@ async function procesarPagoYMostrarTicket() {
   // 5. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS DE SUPABASE
   if (datosUsuarioCompra && idTicket) {
     try {
-      console.log("Enviando correo mediante EmailJS...");
+      console.log("Enviando correo mediante EmailJS a:", datosUsuarioCompra.emailUsuario);
 
       let resumenProductosTexto = datosUsuarioCompra.productos
         .map((p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`)
@@ -126,7 +126,7 @@ async function descargarComprobante(idTicket, boton) {
 
   try {
     const { data: ticket, error } = await supabase_cliente
-      .from("entradas")
+      .from("tickets")
       .select("id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )")
       .eq("id_ticket", idTicket)
       .single();
