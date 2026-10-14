@@ -1,9 +1,9 @@
-/* 1. Contenedor principal: Elevamos el z-index a nivel máximo */
+/* 1. Contenedor principal */
 #textilshop-chatbot-container {
   position: fixed;
-  bottom: 85px;
-  right: 20px;
-  z-index: 99999999 !important; /* Para estar por encima de widgets de accesibilidad */
+  bottom: 20px; /* Bajamos el botón para estar al mismo nivel de Accesibilidad */
+  left: 20px;   /* Cambiamos 'right' por 'left' para moverlo al lado contrario */
+  z-index: 99999999 !important;
   font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -185,11 +185,11 @@
 
 @media (max-width: 600px) {
   #textilshop-chatbot-container {
-    bottom: 80px;
-    right: 15px;
+    bottom: 20px; /* Lo bajamos también en celular */
+    left: 15px;   /* Lo pasamos a la izquierda en celular */
     z-index: 99999999 !important;
   }
-
+  
   #chatbot-window {
     position: fixed;
     top: 0;
