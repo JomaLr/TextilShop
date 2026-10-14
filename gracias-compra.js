@@ -16,96 +16,93 @@ const supabase_sesion = supabase.createClient(
 async function procesarPagoYMostrarTicket() {
   const parametrosURL = new URLSearchParams(window.location.search);
   let idTicket = parametrosURL.get("compra");
-  const status = parametrosURL.get("status") || parametrosURL.get("collection_status");
+  
+  const ordenRaw = localStorage.getItem("orden_pendiente_textil");
 
-  // Si viene con estado aprobado desde Mercado Pago y hay una orden pendiente por registrar
-  if (status === "approved" || status === "success") {
-    const ordenRaw = localStorage.getItem("orden_pendiente_textil");
+  // Si hay una orden pendiente en localStorage, procedemos a registrarla en Supabase
+  if (ordenRaw) {
+    const orden = JSON.parse(ordenRaw);
 
-    if (ordenRaw) {
-      const orden = JSON.parse(ordenRaw);
+    try {
+      // 1. Crear el ticket en Supabase
+      const { data: ticketCreado, error: errorTicket } = await supabase_sesion
+        .from("tickets")
+        .insert([{ id_usuario: orden.idUsuario, total: orden.totalFinal }])
+        .select()
+        .single();
 
-      try {
-        // 1. Crear el ticket en Supabase
-        const { data: ticketCreado, error: errorTicket } = await supabase_sesion
-          .from("tickets")
-          .insert([{ id_usuario: orden.idUsuario, total: orden.totalFinal }])
-          .select()
+      if (errorTicket || !ticketCreado) {
+        throw new Error("Fallo al generar el ticket de compra.");
+      }
+
+      idTicket = ticketCreado.id_ticket;
+
+      // 2. Registrar los detalles del ticket y descontar stock del inventario
+      for (const prod of orden.productos) {
+        const costoTotalArticulo = prod.precio * prod.cantidad;
+
+        await supabase_sesion.from("tickets_detalles").insert([
+          {
+            id_ticket: idTicket,
+            id_producto: prod.id_producto,
+            cantidad: prod.cantidad,
+            total: costoTotalArticulo,
+          },
+        ]);
+
+        const { data: inventarioActual } = await supabase_sesion
+          .from("inventarios")
+          .select("stock")
+          .eq("id_producto", prod.id_producto)
           .single();
 
-        if (errorTicket || !ticketCreado) {
-          throw new Error("Fallo al generar el ticket de compra.");
-        }
+        const stockActual = inventarioActual ? inventarioActual.stock : 0;
+        const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad);
 
-        idTicket = ticketCreado.id_ticket;
-
-        // 2. Registrar los detalles del ticket y descontar stock del inventario
-        for (const prod of orden.productos) {
-          const costoTotalArticulo = prod.precio * prod.cantidad;
-
-          await supabase_sesion.from("tickets_detalles").insert([
-            {
-              id_ticket: idTicket,
-              id_producto: prod.id_producto,
-              cantidad: prod.cantidad,
-              total: costoTotalArticulo,
-            },
-          ]);
-
-          const { data: inventarioActual } = await supabase_sesion
-            .from("inventarios")
-            .select("stock")
-            .eq("id_producto", prod.id_producto)
-            .single();
-
-          const stockActual = inventarioActual ? inventarioActual.stock : 0;
-          const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad);
-
-          await supabase_sesion
-            .from("inventarios")
-            .update({ stock: nuevoStockCalculado })
-            .eq("id_producto", prod.id_producto);
-        }
-
-        // 3. Limpiar carrito si no era compra directa
-        if (!orden.esCompraDirecta) {
-          await supabase_sesion
-            .from("carritos")
-            .delete()
-            .eq("id_usuario", orden.idUsuario);
-        }
-
-        // 4. Enviar correo por EmailJS
-        let resumenProductosTexto = orden.productos
-          .map(
-            (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`
-          )
-          .join("\n");
-
-        const parametrosPlantilla = {
-          to_email: orden.emailUsuario,
-          to_name: orden.nombreCliente,
-          ticket_id: idTicket,
-          lista_articulos: resumenProductosTexto,
-          costo_total: orden.totalFinal,
-          direccion_envio: orden.direccionCliente,
-        };
-
-        await emailjs.send(
-          "service_8w9z5hj",
-          "template_7hg3qes",
-          parametrosPlantilla,
-          "rIUDcgPWkN13PhkIk"
-        );
-
-        console.log("¡Compra procesada y correo enviado exitosamente!");
-
-        // 5. Eliminar la orden temporal
-        localStorage.removeItem("orden_pendiente_textil");
-
-      } catch (err) {
-        console.error("Error al registrar la compra post-pago:", err);
+        await supabase_sesion
+          .from("inventarios")
+          .update({ stock: nuevoStockCalculado })
+          .eq("id_producto", prod.id_producto);
       }
+
+      // 3. Limpiar carrito si no era compra directa
+      if (!orden.esCompraDirecta) {
+        await supabase_sesion
+          .from("carritos")
+          .delete()
+          .eq("id_usuario", orden.idUsuario);
+      }
+
+      // 4. Enviar correo por EmailJS
+      let resumenProductosTexto = orden.productos
+        .map(
+          (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`
+        )
+        .join("\n");
+
+      const parametrosPlantilla = {
+        to_email: orden.emailUsuario,
+        to_name: orden.nombreCliente,
+        ticket_id: idTicket,
+        lista_articulos: resumenProductosTexto,
+        costo_total: orden.totalFinal,
+        direccion_envio: orden.direccionCliente,
+      };
+
+      await emailjs.send(
+        "service_8w9z5hj",
+        "template_7hg3qes",
+        parametrosPlantilla,
+        "rIUDcgPWkN13PhkIk"
+      );
+
+      console.log("¡Compra procesada y correo enviado exitosamente!");
+
+      // 5. Eliminar la orden temporal del almacenamiento local
+      localStorage.removeItem("orden_pendiente_textil");
+
+    } catch (err) {
+      console.error("Error al registrar la compra post-pago:", err);
     }
   }
 
