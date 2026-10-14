@@ -182,7 +182,7 @@ function renderizarYCalcular() {
 // ==========================================
 // 4. GENERACIÓN DE PREFERENCIA DE MERCADO PAGO
 // ==========================================
-async function obtenerUrlMercadoPago() {
+async function obtenerUrlMercadoPago(idTicket) {
   const itemsMP = productosAComprar.map((p) => ({
     title: p.nombre,
     unit_price: Number(p.precio),
@@ -197,7 +197,8 @@ async function obtenerUrlMercadoPago() {
     currency_id: "MXN",
   });
 
-  const respuesta = await fetch("https://ytqxpnuulmyktsxhpyod.supabase.co/functions/v1/create-preference", {
+  // Opcional: Si necesitas pasar el ticket en la URL de la Edge Function, puedes agregarlo como parámetro
+  const respuesta = await fetch(`https://ytqxpnuulmyktsxhpyod.supabase.co/functions/v1/create-preference?compra=${idTicket}`, {
     method: "POST",
     headers: { 
       "Content-Type": "application/json",
@@ -221,7 +222,7 @@ async function obtenerUrlMercadoPago() {
 }
 
 // ==========================================
-// 5. REDIRECCIÓN DIRECTA A MERCADO PAGO
+// 5. CREACIÓN DE TICKET Y REDIRECCIÓN A MERCADO PAGO
 // ==========================================
 btnConfirmar.addEventListener("click", async () => {
   const nombreCliente = document.getElementById("input-nombre").value.trim();
@@ -233,29 +234,79 @@ btnConfirmar.addEventListener("click", async () => {
   }
 
   btnConfirmar.disabled = true;
-  btnConfirmar.textContent = "Redirigiendo a Mercado Pago...";
+  btnConfirmar.textContent = "Procesando orden...";
 
   try {
-    // Guardar temporalmente la orden en localStorage para procesarla tras la confirmación de pago
-    const ordenPendiente = {
-      idUsuario: idUsuarioLogueado,
+    const esCompraDirecta = Boolean(parametrosURL.get("checkout"));
+
+    // 1. Crear el ticket en Supabase de inmediato
+    const { data: ticketCreado, error: errorTicket } = await supabase_conexion
+      .from("tickets")
+      .insert([{ id_usuario: idUsuarioLogueado, total: totalFinal }])
+      .select()
+      .single();
+
+    if (errorTicket || !ticketCreado) {
+      throw new Error("No se pudo generar el ticket inicial en la base de datos.");
+    }
+
+    const idTicketGenerado = ticketCreado.id_ticket;
+
+    // 2. Registrar los detalles del ticket y descontar stock
+    for (const prod of productosAComprar) {
+      const costoTotalArticulo = prod.precio * prod.cantidad;
+
+      await supabase_conexion.from("tickets_detalles").insert([
+        {
+          id_ticket: idTicketGenerado,
+          id_producto: prod.id_producto,
+          cantidad: prod.cantidad,
+          total: costoTotalArticulo,
+        },
+      ]);
+
+      const { data: inventarioActual } = await supabase_conexion
+        .from("inventarios")
+        .select("stock")
+        .eq("id_producto", prod.id_producto)
+        .single();
+
+      const stockActual = inventarioActual ? inventarioActual.stock : 0;
+      const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad);
+
+      await supabase_conexion
+        .from("inventarios")
+        .update({ stock: nuevoStockCalculado })
+        .eq("id_producto", prod.id_producto);
+    }
+
+    // 3. Limpiar carrito si no era compra directa
+    if (!esCompraDirecta) {
+      await supabase_conexion
+        .from("carritos")
+        .delete()
+        .eq("id_usuario", idUsuarioLogueado);
+    }
+
+    // 4. Guardar datos clave en localStorage para usarlos al enviar el correo en la siguiente página
+    const datosEnvioCorreo = {
       emailUsuario: emailUsuarioLogueado,
       nombreCliente: nombreCliente,
       direccionCliente: direccionCliente,
       productos: productosAComprar,
       totalFinal: totalFinal,
-      esCompraDirecta: Boolean(parametrosURL.get("checkout"))
+      idTicket: idTicketGenerado
     };
+    localStorage.setItem("datos_correo_textil", JSON.stringify(datosEnvioCorreo));
 
-    localStorage.setItem("orden_pendiente_textil", JSON.stringify(ordenPendiente));
-
-    // Obtener la URL de pago de Mercado Pago y redirigir
-    const urlPagoMercadoPago = await obtenerUrlMercadoPago();
+    // 5. Obtener la URL de pago de Mercado Pago pasando el id_ticket en la URL de éxito
+    btnConfirmar.textContent = "Redirigiendo a Mercado Pago...";
+    const urlPagoMercadoPago = await obtenerUrlMercadoPago(idTicketGenerado);
     window.location.href = urlPagoMercadoPago;
 
   } catch (err) {
     console.error(err);
-    await alerta("Ocurrió un inconveniente con el pago: " + err.message);
+    await alerta("Ocurrió un inconveniente: " + err.message);
     btnConfirmar.disabled = false;
     btnConfirmar.textContent = "Confirmar Compra";
   }
