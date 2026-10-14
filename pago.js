@@ -209,12 +209,10 @@ async function obtenerUrlMercadoPago() {
 
   const data = await respuesta.json();
 
-  // Si trae el init_point devuelto por tu Edge Function, retornamos la URL
   if (data.init_point) {
     return data.init_point;
   }
 
-  // Si trae el id, armamos la URL de checkout
   if (data.id) {
     return `https://www.mercadopago.com.mx/checkout/v1/redirect?pref_id=${data.id}`;
   }
@@ -223,7 +221,7 @@ async function obtenerUrlMercadoPago() {
 }
 
 // ==========================================
-// 5. TRANSACCIÓN: REGISTRO DE COMPRA Y REDIRECCIÓN A MP
+// 5. REDIRECCIÓN DIRECTA A MERCADO PAGO
 // ==========================================
 btnConfirmar.addEventListener("click", async () => {
   const nombreCliente = document.getElementById("input-nombre").value.trim();
@@ -238,74 +236,21 @@ btnConfirmar.addEventListener("click", async () => {
   btnConfirmar.textContent = "Redirigiendo a Mercado Pago...";
 
   try {
-    // 1. Crear el ticket en Supabase
-    const { data: ticketCreado, error: errorTicket } = await supabase_conexion
-      .from("tickets")
-      .insert([{ id_usuario: idUsuarioLogueado, total: totalFinal }])
-      .select()
-      .single();
+    // Guardar temporalmente la orden en localStorage para procesarla tras la confirmación de pago
+    const ordenPendiente = {
+      idUsuario: idUsuarioLogueado,
+      emailUsuario: emailUsuarioLogueado,
+      nombreCliente: nombreCliente,
+      direccionCliente: direccionCliente,
+      productos: productosAComprar,
+      totalFinal: totalFinal,
+      esCompraDirecta: Boolean(parametrosURL.get("checkout"))
+    };
 
-    if (errorTicket || !ticketCreado) {
-      throw new Error("Fallo al generar el ticket de compra.");
-    }
+    localStorage.setItem("orden_pendiente_textil", JSON.stringify(ordenPendiente));
 
-    const idTicketNuevo = ticketCreado.id_ticket;
-
-    // 2. Registrar detalles y actualizar inventario
-    for (const prod of productosAComprar) {
-      const costoTotalArticulo = prod.precio * prod.cantidad;
-
-      const { error: errorDetalle } = await supabase_conexion
-        .from("tickets_detalles")
-        .insert([
-          {
-            id_ticket: idTicketNuevo,
-            id_producto: prod.id_producto,
-            cantidad: prod.cantidad,
-            total: costoTotalArticulo,
-          },
-        ]);
-
-      if (errorDetalle) {
-        throw new Error(`Error en el desglose del producto ${prod.nombre}`);
-      }
-
-      const { data: inventarioActual } = await supabase_conexion
-        .from("inventarios")
-        .select("stock")
-        .eq("id_producto", prod.id_producto)
-        .single();
-
-      const stockActual = inventarioActual ? inventarioActual.stock : 0;
-      const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad);
-
-      await supabase_conexion
-        .from("inventarios")
-        .update({ stock: nuevoStockCalculado })
-        .eq("id_producto", prod.id_producto);
-    }
-
-    // 3. Limpiar carrito
-    if (!parametrosURL.get("checkout")) {
-      await supabase_conexion
-        .from("carritos")
-        .delete()
-        .eq("id_usuario", idUsuarioLogueado);
-
-      localStorage.removeItem("orden_checkout");
-    }
-
-    // 4. Enviar notificación por email
-    await enviarCorreoConfirmacion(
-      nombreCliente,
-      idTicketNuevo,
-      direccionCliente,
-    );
-
-    // 5. Obtener la URL de pago de la API y redirigir
+    // Obtener la URL de pago de Mercado Pago y redirigir
     const urlPagoMercadoPago = await obtenerUrlMercadoPago();
-    
-    // Redirección inmediata a la ventana de cobro de Mercado Pago
     window.location.href = urlPagoMercadoPago;
 
   } catch (err) {
@@ -315,37 +260,5 @@ btnConfirmar.addEventListener("click", async () => {
     btnConfirmar.textContent = "Confirmar Compra";
   }
 });
-
-// ==========================================
-// 6. INTEGRACIÓN CON EMAILJS
-// ==========================================
-async function enviarCorreoConfirmacion(nombreCliente, idTicket, direccion) {
-  let resumenProductosTexto = productosAComprar
-    .map(
-      (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`,
-    )
-    .join("\n");
-
-  const parametrosPlantilla = {
-    to_email: emailUsuarioLogueado,
-    to_name: nombreCliente,
-    ticket_id: idTicket,
-    lista_articulos: resumenProductosTexto,
-    costo_total: totalFinal,
-    direccion_envio: direccion,
-  };
-
-  try {
-    await emailjs.send(
-      "service_8w9z5hj",
-      "template_7hg3qes",
-      parametrosPlantilla,
-      "rIUDcgPWkN13PhkIk",
-    );
-    console.log("Notificación por correo electrónico enviada con éxito.");
-  } catch (error) {
-    console.error("No se pudo enviar el correo de confirmación:", error);
-  }
-}
 
 document.addEventListener("DOMContentLoaded", inicializarPago);
