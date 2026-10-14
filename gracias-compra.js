@@ -1,49 +1,71 @@
 // Inicializar EmailJS
 emailjs.init("rIUDcgPWkN13PhkIk");
 
-// Configurar conexión con Supabase
+// Configuración oficial y limpia de Supabase para esta vista
 const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
 
+// Instancia única del cliente de Supabase
 const supabase_cliente = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
 async function procesarPagoYMostrarTicket() {
-  console.log("Iniciando procesamiento de gracias-compra...");
+  console.log("Procesando compra directamente desde Supabase...");
   let idTicket = null;
+  let datosUsuarioCompra = null;
 
   try {
-    // 1. Obtener el usuario autenticado usando el cliente correcto
+    // 1. Obtener el usuario autenticado actual desde Supabase Auth
     const { data: { user }, error: userError } = await supabase_cliente.auth.getUser();
     
     if (userError || !user) {
-      console.warn("Advertencia: No hay sesión activa en esta página.");
-    } else {
-      console.log("Usuario autenticado:", user.email);
-      
-      // 2. Buscar el ticket más reciente del usuario
-      const { data: ultimoTicket, error: ticketError } = await supabase_cliente
-        .from("tickets")
-        .select("id_ticket, total")
-        .eq("id_usuario", user.id)
-        .order("id_ticket", { ascending: false })
-        .limit(1)
-        .single();
+      console.error("No hay una sesión activa de Supabase:", userError);
+      return;
+    }
 
-      if (!ticketError && ultimoTicket) {
-        idTicket = ultimoTicket.id_ticket;
-        console.log("Ticket encontrado en Supabase:", idTicket);
-      } else {
-        console.error("Error al buscar el ticket:", ticketError);
+    console.log("Usuario autenticado:", user.email);
+
+    // 2. Consultar directamente el ticket más reciente de este usuario en la base de datos
+    const { data: ultimoTicket, error: ticketError } = await supabase_cliente
+      .from("tickets")
+      .select("id_ticket, total, fecha")
+      .eq("id_usuario", user.id)
+      .order("id_ticket", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (ticketError || !ultimoTicket) {
+      console.error("No se encontró ningún ticket reciente para este usuario:", ticketError);
+    } else {
+      idTicket = ultimoTicket.id_ticket;
+      console.log("Ticket más reciente obtenido de Supabase:", idTicket);
+
+      // 3. Consultar los detalles de los productos de este ticket para armar el correo
+      const { data: detallesTicket, error: detallesError } = await supabase_cliente
+        .from("tickets_detalles")
+        .select("cantidad, total, productos ( nombre, precio )")
+        .eq("id_ticket", idTicket);
+
+      if (!detallesError && detallesTicket) {
+        datosUsuarioCompra = {
+          emailUsuario: user.email,
+          nombreCliente: user.user_metadata?.nombre || "Cliente TextilShop",
+          productos: detallesTicket.map(d => ({
+            nombre: d.productos?.nombre || "Artículo",
+            cantidad: d.cantidad,
+            precio: d.productos?.precio || 0
+          })),
+          totalFinal: ultimoTicket.total
+        };
       }
     }
   } catch (err) {
-    console.error("Excepción al buscar el ticket:", err);
+    console.error("Error general consultando Supabase:", err);
   }
 
-  // 3. PINTAR EL NÚMERO DE TICKET EN PANTALLA
+  // 4. PINTAR EL NÚMERO DE TICKET EN PANTALLA
   const textoTicket = document.getElementById("ticket-numero");
   if (textoTicket) {
     if (idTicket) {
@@ -53,24 +75,22 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // 4. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS TEMPORALES
-  const ordenRaw = localStorage.getItem("datos_correo_textil");
-  if (ordenRaw && idTicket) {
+  // 5. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS OBTENIDOS DE SUPABASE
+  if (datosUsuarioCompra && idTicket) {
     try {
-      const datos = JSON.parse(ordenRaw);
-      console.log("Enviando correo con EmailJS a:", datos.emailUsuario);
+      console.log("Enviando correo mediante EmailJS...");
 
-      let resumenProductosTexto = datos.productos
+      let resumenProductosTexto = datosUsuarioCompra.productos
         .map((p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`)
         .join("\n");
 
       const parametrosPlantilla = {
-        to_email: datos.emailUsuario,
-        to_name: datos.nombreCliente,
+        to_email: datosUsuarioCompra.emailUsuario,
+        to_name: datosUsuarioCompra.nombreCliente,
         ticket_id: idTicket,
         lista_articulos: resumenProductosTexto,
-        costo_total: datos.totalFinal,
-        direccion_envio: datos.direccionCliente,
+        costo_total: datosUsuarioCompra.totalFinal,
+        direccion_envio: "Registrada en perfil",
       };
 
       await emailjs.send(
@@ -80,16 +100,13 @@ async function procesarPagoYMostrarTicket() {
         "rIUDcgPWkN13PhkIk"
       );
 
-      console.log("¡Correo enviado exitosamente!");
-      localStorage.removeItem("datos_correo_textil"); // Limpiamos para no duplicar envíos
+      console.log("¡Correo enviado exitosamente a través de EmailJS!");
     } catch (err) {
-      console.error("Error al enviar el correo por EmailJS:", err);
+      console.error("Error al enviar el correo con EmailJS:", err);
     }
-  } else {
-    console.warn("No hay datos de correo en localStorage o falta el ID del ticket.");
   }
 
-  // 5. Configurar el botón del PDF
+  // 6. Configurar el botón del PDF
   const btnPdf = document.getElementById("btn-pdf");
   if (btnPdf) {
     if (!idTicket) {
