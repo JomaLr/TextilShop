@@ -1,28 +1,21 @@
 // Inicializar EmailJS
 emailjs.init("rIUDcgPWkN13PhkIk");
 
-// Configuración de Supabase
-const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
-
-const supabase_sesion = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
 async function procesarPagoYMostrarTicket() {
   console.log("Iniciando procesamiento de gracias-compra...");
   let idTicket = null;
 
   try {
-    // 1. Obtener el usuario autenticado
-    const { data: { user }, error: userError } = await supabase_sesion.auth.getUser();
+    // Usamos supabase directamente (asumiendo que supabase viene del CDN global)
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
     
     if (userError || !user) {
       console.warn("Advertencia: No hay sesión activa en esta página.");
     } else {
-      // 2. Buscar automáticamente el ticket más reciente generado por este usuario en Supabase
-      const { data: ultimoTicket, error: ticketError } = await supabase_sesion
+      console.log("Usuario autenticado:", user.email);
+      
+      // Buscar el ticket más reciente del usuario
+      const { data: ultimoTicket, error: ticketError } = await supabase
         .from("tickets")
         .select("id_ticket, total")
         .eq("id_usuario", user.id)
@@ -41,7 +34,7 @@ async function procesarPagoYMostrarTicket() {
     console.error("Excepción al buscar el ticket:", err);
   }
 
-  // 3. PINTAR EL NÚMERO DE TICKET EN PANTALLA
+  // 1. PINTAR EL NÚMERO DE TICKET EN PANTALLA
   const textoTicket = document.getElementById("ticket-numero");
   if (textoTicket) {
     if (idTicket) {
@@ -51,7 +44,7 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // 4. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS TEMPORALES
+  // 2. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS TEMPORALES
   const ordenRaw = localStorage.getItem("datos_correo_textil");
   if (ordenRaw && idTicket) {
     try {
@@ -85,7 +78,7 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // 5. Configurar el botón del PDF
+  // 3. Configurar el botón del PDF
   const btnPdf = document.getElementById("btn-pdf");
   if (btnPdf) {
     if (!idTicket) {
@@ -105,7 +98,7 @@ async function descargarComprobante(idTicket, boton) {
   boton.textContent = "Generando...";
 
   try {
-    const { data: ticket, error } = await supabase_sesion
+    const { data: ticket, error } = await supabase
       .from("tickets")
       .select("id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )")
       .eq("id_ticket", idTicket)
