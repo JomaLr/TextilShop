@@ -10,18 +10,16 @@ const supabase_sesion = supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-// ==========================================
-// PROCESAMIENTO POST-PAGO Y MOSTRAR TICKET
-// ==========================================
 async function procesarPagoYMostrarTicket() {
+  console.log("Iniciando procesamiento de gracias-compra...");
   let idTicket = null;
 
   try {
-    // 1. Obtener el usuario autenticado actual
+    // 1. Obtener el usuario autenticado
     const { data: { user }, error: userError } = await supabase_sesion.auth.getUser();
     
     if (userError || !user) {
-      console.error("No hay usuario autenticado al volver de la compra.");
+      console.warn("Advertencia: No hay sesión activa en esta página.");
     } else {
       // 2. Buscar automáticamente el ticket más reciente generado por este usuario en Supabase
       const { data: ultimoTicket, error: ticketError } = await supabase_sesion
@@ -34,10 +32,13 @@ async function procesarPagoYMostrarTicket() {
 
       if (!ticketError && ultimoTicket) {
         idTicket = ultimoTicket.id_ticket;
+        console.log("Ticket encontrado en Supabase:", idTicket);
+      } else {
+        console.error("Error al buscar el ticket:", ticketError);
       }
     }
   } catch (err) {
-    console.error("Error al buscar el ticket reciente:", err);
+    console.error("Excepción al buscar el ticket:", err);
   }
 
   // 3. PINTAR EL NÚMERO DE TICKET EN PANTALLA
@@ -50,16 +51,15 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // 4. Enviar el correo electrónico mediante EmailJS si tenemos los datos temporales en el localStorage
+  // 4. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS TEMPORALES
   const ordenRaw = localStorage.getItem("datos_correo_textil");
   if (ordenRaw && idTicket) {
     try {
       const datos = JSON.parse(ordenRaw);
+      console.log("Enviando correo con EmailJS a:", datos.emailUsuario);
 
       let resumenProductosTexto = datos.productos
-        .map(
-          (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`
-        )
+        .map((p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`)
         .join("\n");
 
       const parametrosPlantilla = {
@@ -78,20 +78,14 @@ async function procesarPagoYMostrarTicket() {
         "rIUDcgPWkN13PhkIk"
       );
 
-      console.log("¡Correo enviado exitosamente por EmailJS!");
-      localStorage.removeItem("datos_correo_textil"); // Limpiamos para no reenviar el correo
+      console.log("¡Correo enviado exitosamente!");
+      localStorage.removeItem("datos_correo_textil"); // Limpiamos para no duplicar envíos
     } catch (err) {
-      console.error("Error al enviar el correo con EmailJS:", err);
+      console.error("Error al enviar el correo por EmailJS:", err);
     }
   }
 
-  // Prevenir que el usuario regrese a la pantalla de pago presionando "Atrás"
-  history.pushState(null, null, window.location.href);
-  window.addEventListener("popstate", () => {
-    window.location.href = "index.html";
-  });
-
-  // 5. Configurar listener para el botón de PDF
+  // 5. Configurar el botón del PDF
   const btnPdf = document.getElementById("btn-pdf");
   if (btnPdf) {
     if (!idTicket) {
@@ -113,9 +107,7 @@ async function descargarComprobante(idTicket, boton) {
   try {
     const { data: ticket, error } = await supabase_sesion
       .from("tickets")
-      .select(
-        "id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )"
-      )
+      .select("id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )")
       .eq("id_ticket", idTicket)
       .single();
 
@@ -123,10 +115,8 @@ async function descargarComprobante(idTicket, boton) {
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    const moneda = (n) =>
-      `$${Number(n || 0).toLocaleString("es-MX", { minimumFractionDigits: 2 })} MXN`;
+    const moneda = (n) => `$${Number(n || 0).toLocaleString("es-MX", { minimumFractionDigits: 2 })} MXN`;
 
-    // Encabezado
     doc.setFontSize(22);
     doc.text("TextilShop", 14, 20);
     doc.setFontSize(12);
@@ -135,7 +125,6 @@ async function descargarComprobante(idTicket, boton) {
     doc.text(`Pedido: #TK-${ticket.id_ticket}`, 14, 36);
     doc.text(`Fecha: ${new Date().toLocaleDateString("es-MX")}`, 14, 43);
 
-    // Tabla de productos
     const filas = (ticket.tickets_detalles || []).map((d) => [
       d.productos ? d.productos.nombre : "Producto no disponible",
       d.cantidad,
@@ -151,7 +140,6 @@ async function descargarComprobante(idTicket, boton) {
       styles: { fontSize: 11 },
     });
 
-    // Total
     const y = doc.lastAutoTable.finalY + 12;
     doc.setTextColor(0);
     doc.setFontSize(14);
