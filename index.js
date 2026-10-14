@@ -117,7 +117,7 @@ async function cargarproductos() {
       pagination: {
         el: ".productos-swiper .swiper-pagination",
         clickable: true,
-        dynamicBullets: true, // pocos puntos aunque haya muchos productos
+        dynamicBullets: true,
       },
       navigation: {
         nextEl: ".productos-swiper .swiper-button-next",
