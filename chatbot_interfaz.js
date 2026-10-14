@@ -1,4 +1,3 @@
-// chatbot_interfaz.js
 import { Chatbot } from "./chatbot.js";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -38,8 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     chatWindow.classList.remove("hidden");
     toggleBtn.classList.add("hidden");
     inputField.focus();
-
-    // Iniciar chat (El saludo inicial de tu java)
     if (!chatIniciado) {
       const mensajeInicial = miBot.iniciarChat();
       if (mensajeInicial) {
@@ -49,9 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function closeChat() {
+function closeChat() {
     chatWindow.classList.add("hidden");
     toggleBtn.classList.remove("hidden");
+    
+    messagesContainer.innerHTML = "";
+    
+    chatIniciado = false;
+    miBot.estadoActual = miBot.ESTADOS.INICIO;
   }
 
   function appendMessage(sender, text, className) {
