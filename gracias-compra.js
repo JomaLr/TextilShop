@@ -26,18 +26,18 @@ async function procesarPagoYMostrarTicket() {
 
     console.log("Usuario autenticado:", user.email);
 
-    // 2. Consultar directamente el pedido más reciente en la tabla 'entradas'
-    const { data: ultimoPedido, error: pedidoError } = await supabase_cliente
+    // 2. Consultar el pedido más reciente en la tabla 'entradas' sin usar .single()
+    const { data: pedidos, error: pedidoError } = await supabase_cliente
       .from("entradas")
       .select("id_ticket, total")
       .eq("id_usuario", user.id)
       .order("id_ticket", { ascending: false })
-      .limit(1)
-      .single();
+      .limit(1);
 
-    if (pedidoError || !ultimoPedido) {
+    if (pedidoError || !pedidos || pedidos.length === 0) {
       console.error("No se encontró ningún pedido reciente en 'entradas':", pedidoError);
     } else {
+      const ultimoPedido = pedidos[0];
       idTicket = ultimoPedido.id_ticket;
       console.log("Pedido más reciente obtenido:", idTicket);
 
@@ -125,7 +125,6 @@ async function descargarComprobante(idTicket, boton) {
   boton.textContent = "Generando...";
 
   try {
-    // Consultamos la tabla 'entradas' y sus 'tickets_detalles'
     const { data: ticket, error } = await supabase_cliente
       .from("entradas")
       .select("id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )")
