@@ -1,52 +1,154 @@
-document.addEventListener("DOMContentLoaded", () => {
-  //EXTRAER EL ID DEL TICKET DESDE LA URL Y PINTARLO
+// Inicializar EmailJS
+emailjs.init("rIUDcgPWkN13PhkIk");
+
+// Configuración de Supabase
+const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
+
+const supabase_sesion = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+// ==========================================
+// 1. PROCESAMIENTO POST-PAGO Y ENVÍO DE CORREO
+// ==========================================
+async function procesarPagoYMostrarTicket() {
   const parametrosURL = new URLSearchParams(window.location.search);
-  const idTicket = parametrosURL.get("compra"); // Recuerda que mandamos ?compra=id_ticket
+  let idTicket = parametrosURL.get("compra");
+  const status = parametrosURL.get("status") || parametrosURL.get("collection_status");
 
-  const textoTicket = document.getElementById("ticket-numero");
+  // Si viene con estado aprobado desde Mercado Pago y hay una orden pendiente por registrar
+  if (status === "approved" || status === "success") {
+    const ordenRaw = localStorage.getItem("orden_pendiente_textil");
 
-  if (idTicket) {
-    // Le damos formato estético pa que se vea bonito
-    textoTicket.textContent = `#TK-${idTicket}`;
-  } else {
-    // Por si el usuario entró directo a la URL escribiendo a mano sin comprar
-    textoTicket.textContent = "#FALTA-TICKET";
+    if (ordenRaw) {
+      const orden = JSON.parse(ordenRaw);
+
+      try {
+        // 1. Crear el ticket en Supabase
+        const { data: ticketCreado, error: errorTicket } = await supabase_sesion
+          .from("tickets")
+          .insert([{ id_usuario: orden.idUsuario, total: orden.totalFinal }])
+          .select()
+          .single();
+
+        if (errorTicket || !ticketCreado) {
+          throw new Error("Fallo al generar el ticket de compra.");
+        }
+
+        idTicket = ticketCreado.id_ticket;
+
+        // 2. Registrar los detalles del ticket y descontar stock del inventario
+        for (const prod of orden.productos) {
+          const costoTotalArticulo = prod.precio * prod.cantidad;
+
+          await supabase_sesion.from("tickets_detalles").insert([
+            {
+              id_ticket: idTicket,
+              id_producto: prod.id_producto,
+              cantidad: prod.cantidad,
+              total: costoTotalArticulo,
+            },
+          ]);
+
+          const { data: inventarioActual } = await supabase_sesion
+            .from("inventarios")
+            .select("stock")
+            .eq("id_producto", prod.id_producto)
+            .single();
+
+          const stockActual = inventarioActual ? inventarioActual.stock : 0;
+          const nuevoStockCalculado = Math.max(0, stockActual - prod.cantidad);
+
+          await supabase_sesion
+            .from("inventarios")
+            .update({ stock: nuevoStockCalculado })
+            .eq("id_producto", prod.id_producto);
+        }
+
+        // 3. Limpiar carrito si no era compra directa
+        if (!orden.esCompraDirecta) {
+          await supabase_sesion
+            .from("carritos")
+            .delete()
+            .eq("id_usuario", orden.idUsuario);
+        }
+
+        // 4. Enviar correo por EmailJS
+        let resumenProductosTexto = orden.productos
+          .map(
+            (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`
+          )
+          .join("\n");
+
+        const parametrosPlantilla = {
+          to_email: orden.emailUsuario,
+          to_name: orden.nombreCliente,
+          ticket_id: idTicket,
+          lista_articulos: resumenProductosTexto,
+          costo_total: orden.totalFinal,
+          direccion_envio: orden.direccionCliente,
+        };
+
+        await emailjs.send(
+          "service_8w9z5hj",
+          "template_7hg3qes",
+          parametrosPlantilla,
+          "rIUDcgPWkN13PhkIk"
+        );
+
+        console.log("¡Compra procesada y correo enviado exitosamente!");
+
+        // 5. Eliminar la orden temporal
+        localStorage.removeItem("orden_pendiente_textil");
+
+      } catch (err) {
+        console.error("Error al registrar la compra post-pago:", err);
+      }
+    }
   }
 
-  // Inyectamos un estado falso en el historial del navegador inmediatamente
-  history.pushState(null, null, window.location.href);
+  // PINTAR EL NÚMERO DE TICKET EN PANTALLA
+  const textoTicket = document.getElementById("ticket-numero");
+  if (textoTicket) {
+    if (idTicket) {
+      textoTicket.textContent = `#TK-${idTicket}`;
+    } else {
+      textoTicket.textContent = "#FALTA-TICKET";
+    }
+  }
 
+  // Prevenir que el usuario regrese a la pantalla de pago presionando "Atrás"
+  history.pushState(null, null, window.location.href);
   window.addEventListener("popstate", () => {
-    // En cuanto detectamos que quiere regresar, lo mandamos al index de la tienda
     window.location.href = "index.html";
   });
-});
 
-// ==========================================
-// COMPROBANTE EN PDF (jsPDF + AutoTable)
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
+  // Configurar listener para el botón de PDF
   const btnPdf = document.getElementById("btn-pdf");
-  const idTicket = new URLSearchParams(window.location.search).get("compra");
-  if (!btnPdf) return;
-  if (!idTicket) {
-    btnPdf.style.display = "none"; // sin ticket no hay comprobante
-    return;
+  if (btnPdf) {
+    if (!idTicket) {
+      btnPdf.style.display = "none";
+    } else {
+      btnPdf.onclick = () => descargarComprobante(idTicket, btnPdf);
+    }
   }
-  btnPdf.addEventListener("click", () => descargarComprobante(idTicket, btnPdf));
-});
+}
 
+// ==========================================
+// 2. COMPROBANTE EN PDF (jsPDF + AutoTable)
+// ==========================================
 async function descargarComprobante(idTicket, boton) {
   const textoOriginal = boton.textContent;
   boton.disabled = true;
   boton.textContent = "Generando...";
 
   try {
-    // Traemos el ticket con su desglose (RLS limita a los tickets del usuario)
     const { data: ticket, error } = await supabase_sesion
       .from("tickets")
       .select(
-        "id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )",
+        "id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )"
       )
       .eq("id_ticket", idTicket)
       .single();
@@ -95,9 +197,15 @@ async function descargarComprobante(idTicket, boton) {
     doc.save(`comprobante-TK-${ticket.id_ticket}.pdf`);
   } catch (err) {
     console.error("Error al generar el PDF:", err);
-    await alerta("No se pudo generar el comprobante. Intenta de nuevo.", "error");
+    if (typeof alerta === "function") {
+      await alerta("No se pudo generar el comprobante. Intenta de nuevo.", "error");
+    } else {
+      alert("No se pudo generar el comprobante. Intenta de nuevo.");
+    }
   } finally {
     boton.disabled = false;
     boton.textContent = textoOriginal;
   }
 }
+
+document.addEventListener("DOMContentLoaded", procesarPagoYMostrarTicket);
