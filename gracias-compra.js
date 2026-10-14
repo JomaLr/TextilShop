@@ -1,18 +1,17 @@
 // Inicializar EmailJS
 emailjs.init("rIUDcgPWkN13PhkIk");
 
-// Configuración oficial y limpia de Supabase para esta vista
+// Configuración de Supabase
 const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
 
-// Instancia única del cliente de Supabase
 const supabase_cliente = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
 );
 
 async function procesarPagoYMostrarTicket() {
-  console.log("Procesando compra directamente desde Supabase...");
+  console.log("Procesando compra directamente desde la tabla 'entradas'...");
   let idTicket = null;
   let datosUsuarioCompra = null;
 
@@ -27,22 +26,22 @@ async function procesarPagoYMostrarTicket() {
 
     console.log("Usuario autenticado:", user.email);
 
-    // 2. Consultar directamente el ticket más reciente de este usuario en la base de datos
-    const { data: ultimoTicket, error: ticketError } = await supabase_cliente
-      .from("tickets")
-      .select("id_ticket, total, fecha")
+    // 2. Consultar directamente el pedido más reciente en la tabla 'entradas'
+    const { data: ultimoPedido, error: pedidoError } = await supabase_cliente
+      .from("entradas")
+      .select("id_ticket, total")
       .eq("id_usuario", user.id)
       .order("id_ticket", { ascending: false })
       .limit(1)
       .single();
 
-    if (ticketError || !ultimoTicket) {
-      console.error("No se encontró ningún ticket reciente para este usuario:", ticketError);
+    if (pedidoError || !ultimoPedido) {
+      console.error("No se encontró ningún pedido reciente en 'entradas':", pedidoError);
     } else {
-      idTicket = ultimoTicket.id_ticket;
-      console.log("Ticket más reciente obtenido de Supabase:", idTicket);
+      idTicket = ultimoPedido.id_ticket;
+      console.log("Pedido más reciente obtenido:", idTicket);
 
-      // 3. Consultar los detalles de los productos de este ticket para armar el correo
+      // 3. Consultar los detalles en 'tickets_detalles' para armar el correo
       const { data: detallesTicket, error: detallesError } = await supabase_cliente
         .from("tickets_detalles")
         .select("cantidad, total, productos ( nombre, precio )")
@@ -57,7 +56,7 @@ async function procesarPagoYMostrarTicket() {
             cantidad: d.cantidad,
             precio: d.productos?.precio || 0
           })),
-          totalFinal: ultimoTicket.total
+          totalFinal: ultimoPedido.total
         };
       }
     }
@@ -75,7 +74,7 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // 5. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS OBTENIDOS DE SUPABASE
+  // 5. ENVIAR CORREO CON EMAILJS USANDO LOS DATOS DE SUPABASE
   if (datosUsuarioCompra && idTicket) {
     try {
       console.log("Enviando correo mediante EmailJS...");
@@ -126,13 +125,14 @@ async function descargarComprobante(idTicket, boton) {
   boton.textContent = "Generando...";
 
   try {
+    // Consultamos la tabla 'entradas' y sus 'tickets_detalles'
     const { data: ticket, error } = await supabase_cliente
-      .from("tickets")
+      .from("entradas")
       .select("id_ticket, total, tickets_detalles ( cantidad, total, productos ( nombre, precio ) )")
       .eq("id_ticket", idTicket)
       .single();
 
-    if (error || !ticket) throw error || new Error("Ticket no encontrado");
+    if (error || !ticket) throw error || new Error("Pedido no encontrado");
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
