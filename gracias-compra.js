@@ -14,30 +14,33 @@ const supabase_sesion = supabase.createClient(
 // PROCESAMIENTO POST-PAGO Y MOSTRAR TICKET
 // ==========================================
 async function procesarPagoYMostrarTicket() {
-  const parametrosURL = new URLSearchParams(window.location.search);
-  
-  // Intentamos obtener el ID del ticket de la URL o buscamos el más reciente del usuario logueado
-  let idTicket = parametrosURL.get("compra") || parametrosURL.get("external_reference");
+  let idTicket = null;
 
-  if (!idTicket) {
-    // Si no viene en la URL, consultamos el último ticket generado por el usuario en Supabase
-    const { data: { user } } = await supabase_sesion.auth.getUser();
-    if (user) {
-      const { data: ultimoTicket } = await supabase_sesion
+  try {
+    // 1. Obtener el usuario autenticado actual
+    const { data: { user }, error: userError } = await supabase_sesion.auth.getUser();
+    
+    if (userError || !user) {
+      console.error("No hay usuario autenticado al volver de la compra.");
+    } else {
+      // 2. Buscar automáticamente el ticket más reciente generado por este usuario en Supabase
+      const { data: ultimoTicket, error: ticketError } = await supabase_sesion
         .from("tickets")
-        .select("id_ticket")
+        .select("id_ticket, total")
         .eq("id_usuario", user.id)
         .order("id_ticket", { ascending: false })
         .limit(1)
         .single();
 
-      if (ultimoTicket) {
+      if (!ticketError && ultimoTicket) {
         idTicket = ultimoTicket.id_ticket;
       }
     }
+  } catch (err) {
+    console.error("Error al buscar el ticket reciente:", err);
   }
 
-  // PINTAR EL NÚMERO DE TICKET EN PANTALLA
+  // 3. PINTAR EL NÚMERO DE TICKET EN PANTALLA
   const textoTicket = document.getElementById("ticket-numero");
   if (textoTicket) {
     if (idTicket) {
@@ -47,25 +50,25 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // Enviar el correo electrónico mediante EmailJS si tenemos los datos en localStorage
-  const ordenRaw = localStorage.getItem("orden_pendiente_textil");
+  // 4. Enviar el correo electrónico mediante EmailJS si tenemos los datos temporales en el localStorage
+  const ordenRaw = localStorage.getItem("datos_correo_textil");
   if (ordenRaw && idTicket) {
     try {
-      const orden = JSON.parse(ordenRaw);
+      const datos = JSON.parse(ordenRaw);
 
-      let resumenProductosTexto = orden.productos
+      let resumenProductosTexto = datos.productos
         .map(
           (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`
         )
         .join("\n");
 
       const parametrosPlantilla = {
-        to_email: orden.emailUsuario,
-        to_name: orden.nombreCliente,
+        to_email: datos.emailUsuario,
+        to_name: datos.nombreCliente,
         ticket_id: idTicket,
         lista_articulos: resumenProductosTexto,
-        costo_total: orden.totalFinal,
-        direccion_envio: orden.direccionCliente,
+        costo_total: datos.totalFinal,
+        direccion_envio: datos.direccionCliente,
       };
 
       await emailjs.send(
@@ -76,13 +79,19 @@ async function procesarPagoYMostrarTicket() {
       );
 
       console.log("¡Correo enviado exitosamente por EmailJS!");
-      localStorage.removeItem("orden_pendiente_textil"); // Limpiamos la orden temporal
+      localStorage.removeItem("datos_correo_textil"); // Limpiamos para no reenviar el correo
     } catch (err) {
-      console.error("Error al enviar el correo:", err);
+      console.error("Error al enviar el correo con EmailJS:", err);
     }
   }
 
-  // Configurar listener para el botón de PDF
+  // Prevenir que el usuario regrese a la pantalla de pago presionando "Atrás"
+  history.pushState(null, null, window.location.href);
+  window.addEventListener("popstate", () => {
+    window.location.href = "index.html";
+  });
+
+  // 5. Configurar listener para el botón de PDF
   const btnPdf = document.getElementById("btn-pdf");
   if (btnPdf) {
     if (!idTicket) {
