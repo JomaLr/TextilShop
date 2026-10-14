@@ -197,15 +197,18 @@ async function obtenerUrlMercadoPago(idTicket) {
     currency_id: "MXN",
   });
 
-  // Opcional: Si necesitas pasar el ticket en la URL de la Edge Function, puedes agregarlo como parámetro
-  const respuesta = await fetch(`https://ytqxpnuulmyktsxhpyod.supabase.co/functions/v1/create-preference?compra=${idTicket}`, {
+  const respuesta = await fetch("https://ytqxpnuulmyktsxhpyod.supabase.co/functions/v1/create-preference", {
     method: "POST",
     headers: { 
       "Content-Type": "application/json",
       "apikey": SUPABASE_ANON_KEY,
       "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
     },
-    body: JSON.stringify({ items: itemsMP }),
+    // Y aquí agregas el external_reference con el idTicket
+    body: JSON.stringify({ 
+      items: itemsMP,
+      external_reference: String(idTicket) 
+    }),
   });
 
   const data = await respuesta.json();
@@ -288,7 +291,7 @@ btnConfirmar.addEventListener("click", async () => {
         .eq("id_usuario", idUsuarioLogueado);
     }
 
-    // 4. Guardar datos clave en localStorage para usarlos al enviar el correo en la siguiente página
+// 4. Guardar datos clave en localStorage para usarlos al enviar el correo en la siguiente página
     const datosEnvioCorreo = {
       emailUsuario: emailUsuarioLogueado,
       nombreCliente: nombreCliente,
@@ -299,9 +302,9 @@ btnConfirmar.addEventListener("click", async () => {
     };
     localStorage.setItem("datos_correo_textil", JSON.stringify(datosEnvioCorreo));
 
-    // 5. Obtener la URL de pago de Mercado Pago pasando el id_ticket en la URL de éxito
+    // 5. AQUÍ ES DONDE LO PASAS: Modificas esta línea para incluir idTicketGenerado
     btnConfirmar.textContent = "Redirigiendo a Mercado Pago...";
-    const urlPagoMercadoPago = await obtenerUrlMercadoPago(idTicketGenerado);
+    const urlPagoMercadoPago = await obtenerUrlMercadoPago(idTicketGenerado); 
     window.location.href = urlPagoMercadoPago;
 
   } catch (err) {

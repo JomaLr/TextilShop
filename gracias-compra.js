@@ -11,13 +11,33 @@ const supabase_sesion = supabase.createClient(
 );
 
 // ==========================================
-// PROCESAMIENTO POST-PAGO Y ENVÍO DE CORREO
+// PROCESAMIENTO POST-PAGO Y MOSTRAR TICKET
 // ==========================================
 async function procesarPagoYMostrarTicket() {
   const parametrosURL = new URLSearchParams(window.location.search);
-  const idTicket = parametrosURL.get("compra");
+  
+  // Intentamos obtener el ID del ticket de la URL o buscamos el más reciente del usuario logueado
+  let idTicket = parametrosURL.get("compra") || parametrosURL.get("external_reference");
 
-  // PINTAR EL NÚMERO DE TICKET EN PANTALLA INMEDIATAMENTE
+  if (!idTicket) {
+    // Si no viene en la URL, consultamos el último ticket generado por el usuario en Supabase
+    const { data: { user } } = await supabase_sesion.auth.getUser();
+    if (user) {
+      const { data: ultimoTicket } = await supabase_sesion
+        .from("tickets")
+        .select("id_ticket")
+        .eq("id_usuario", user.id)
+        .order("id_ticket", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (ultimoTicket) {
+        idTicket = ultimoTicket.id_ticket;
+      }
+    }
+  }
+
+  // PINTAR EL NÚMERO DE TICKET EN PANTALLA
   const textoTicket = document.getElementById("ticket-numero");
   if (textoTicket) {
     if (idTicket) {
@@ -27,25 +47,25 @@ async function procesarPagoYMostrarTicket() {
     }
   }
 
-  // Enviar el correo electrónico mediante EmailJS usando los datos temporales
-  const datosCorreoRaw = localStorage.getItem("datos_correo_textil");
-  if (datosCorreoRaw && idTicket) {
+  // Enviar el correo electrónico mediante EmailJS si tenemos los datos en localStorage
+  const ordenRaw = localStorage.getItem("orden_pendiente_textil");
+  if (ordenRaw && idTicket) {
     try {
-      const datos = JSON.parse(datosCorreoRaw);
+      const orden = JSON.parse(ordenRaw);
 
-      let resumenProductosTexto = datos.productos
+      let resumenProductosTexto = orden.productos
         .map(
           (p) => `- ${p.nombre} (Cantidad: ${p.cantidad}) - $${p.precio * p.cantidad} MXN`
         )
         .join("\n");
 
       const parametrosPlantilla = {
-        to_email: datos.emailUsuario,
-        to_name: datos.nombreCliente,
+        to_email: orden.emailUsuario,
+        to_name: orden.nombreCliente,
         ticket_id: idTicket,
         lista_articulos: resumenProductosTexto,
-        costo_total: datos.totalFinal,
-        direccion_envio: datos.direccionCliente,
+        costo_total: orden.totalFinal,
+        direccion_envio: orden.direccionCliente,
       };
 
       await emailjs.send(
@@ -55,19 +75,12 @@ async function procesarPagoYMostrarTicket() {
         "rIUDcgPWkN13PhkIk"
       );
 
-      console.log("¡Correo enviado exitosamente!");
-      // Limpiar datos temporales de correo
-      localStorage.removeItem("datos_correo_textil");
+      console.log("¡Correo enviado exitosamente por EmailJS!");
+      localStorage.removeItem("orden_pendiente_textil"); // Limpiamos la orden temporal
     } catch (err) {
-      console.error("Error al enviar el correo con EmailJS:", err);
+      console.error("Error al enviar el correo:", err);
     }
   }
-
-  // Prevenir que el usuario regrese a la pantalla de pago presionando "Atrás"
-  history.pushState(null, null, window.location.href);
-  window.addEventListener("popstate", () => {
-    window.location.href = "index.html";
-  });
 
   // Configurar listener para el botón de PDF
   const btnPdf = document.getElementById("btn-pdf");
