@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <label for="font-size-slider">6. Tamaño de Texto (<span id="font-size-val">100</span>%)</label>
           <input type="range" id="font-size-slider" min="100" max="200" step="10" value="100">
         </div>
-  
+
         <button class="acc-reset-btn" id="acc-reset">Restablecer Valores</button>
       </div>
     `;
@@ -184,7 +184,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     btnKeyboard.addEventListener("click", () => enableKeyboardNav(!keyboardActive));
   
-    // --- 4. Uso del Color ---
+    // --- 4. Uso del Color: etiquetas de texto junto a los estados ---
+    // Cada regla dice qué elementos se distinguen por color y qué texto agregar
+    const REGLAS_ETIQUETAS = [
+      { selector: ".stock-indicator.agotado", texto: "✖ Agotado", dentro: true },
+      { selector: ".stock-indicator.disponible", texto: "✔ Disponible", dentro: true },
+      { selector: ".status.Disponible", texto: "✔ Hay stock" },
+      { selector: ".status.Bajo", texto: "⚠ Stock bajo" },
+      { selector: ".status.Agotado", texto: "✖ Sin stock" },
+      { selector: ".status.preparing", texto: "⏳ En preparación" },
+      { selector: ".status.shipped", texto: "🚚 Enviado" },
+      { selector: ".status.delivered", texto: "✔ Entregado" },
+    ];
+
+    // Crea las etiquetas (ocultas por CSS hasta que se active la opción)
+    function crearEtiquetas() {
+      REGLAS_ETIQUETAS.forEach(({ selector, texto, dentro }) => {
+        document.querySelectorAll(selector).forEach((el) => {
+          if (el.dataset.accEtiquetado) return; // ya tiene etiqueta
+          el.dataset.accEtiquetado = "1";
+          const etiqueta = document.createElement("span");
+          etiqueta.className = "color-label-indicator";
+          etiqueta.textContent = texto;
+          // Los <p> son de bloque: la etiqueta va dentro para quedar en la misma línea
+          el.insertAdjacentElement(dentro ? "beforeend" : "afterend", etiqueta);
+        });
+      });
+    }
+    crearEtiquetas();
+
+    // Muchas pantallas se llenan después de consultar Supabase: vigilamos cambios
+    let etiquetasPendientes = false;
+    new MutationObserver(() => {
+      if (etiquetasPendientes) return;
+      etiquetasPendientes = true;
+      requestAnimationFrame(() => {
+        etiquetasPendientes = false;
+        crearEtiquetas();
+      });
+    }).observe(document.body, { childList: true, subtree: true });
+
     let colorActive = false;
     function enableColorLabels(enable) {
       colorActive = enable;
@@ -194,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("acc_color", enable);
     }
     btnColorLabels.addEventListener("click", () => enableColorLabels(!colorActive));
-  
+
     // --- 5. Contraste de Color ---
     let contrastActive = false;
     function enableContrast(enable) {
@@ -220,7 +259,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("acc_contrast") === "true") enableContrast(true);
       if (localStorage.getItem("acc_keyboard") === "true") enableKeyboardNav(true);
       if (localStorage.getItem("acc_alt") === "true") enableAltVisualizer(true);
-      if (localStorage.getItem("acc_color") === "true") enableColorLabels(true);
       const savedZoom = localStorage.getItem("acc_zoom") || "100";
       applyZoom(savedZoom);
       updateDarkButtonState(isDarkModeActive());
