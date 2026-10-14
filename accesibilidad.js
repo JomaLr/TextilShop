@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     widgetContainer.id = "accessibility-widget-container";
     widgetContainer.innerHTML = `
       <div id="accessibility-fab" role="button" tabindex="0" style="position: fixed !important; bottom: 20px !important; right: 20px !important; left: auto !important; width: auto !important; max-width: max-content !important; display: inline-flex !important; align-items: center !important; gap: 8px !important; background-color: #0d6efd !important; color: #ffffff !important; border: none !important; border-radius: 50px !important; padding: 10px 18px !important; font-size: 14px !important; font-weight: 600 !important; cursor: pointer !important; z-index: 99999 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;" aria-expanded="false" aria-controls="accessibility-panel" aria-label="Abrir menú de accesibilidad">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="4" r="2"/><path d="M19 13v-2c-1.5 0-3-1-3-3s-1.5-3-3-3-3 1-3 3-1.5 3-3 3v2h2v7h3v-4h2v4h3v-7h2z"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10.5"/><circle cx="12" cy="6.4" r="1.7"/><path d="M5.8 9.4c2 .7 4.1 1.1 6.2 1.1s4.2-.4 6.2-1.1"/><path d="M12 10.5v3.6"/><path d="M12 14.1l-2.7 5.1M12 14.1l2.7 5.1"/></svg>
         Accesibilidad
       </div>
   
