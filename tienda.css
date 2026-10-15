@@ -333,6 +333,49 @@ a {
     0 5px 20px rgba(0, 0, 0, 0.08);
 
   transition: 0.3s;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+.product-card img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+}
+
+
+.product-info {
+  padding: 20px;
+  
+  /* Y agrega estas 2 líneas aquí */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+
+.product-info h3 {
+  margin-bottom: 10px;
+}
+
+
+.category {
+  color: #888;
+  margin-bottom: 10px;
+}
+
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  
+  /* Y esta última línea aquí */
+  margin-top: auto;
+
 }
 
 

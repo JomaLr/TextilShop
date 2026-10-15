@@ -191,6 +191,49 @@ a {
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
 
   padding-bottom: 20px;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+.product-card img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+}
+
+
+.product-info {
+  padding: 20px;
+  
+  /* Y agrega estas 2 líneas aquí */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+
+.product-info h3 {
+  margin-bottom: 10px;
+}
+
+
+.category {
+  color: #888;
+  margin-bottom: 10px;
+}
+
+
+.price {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  
+  /* Y esta última línea aquí */
+  margin-top: auto;
+
 }
 
 .product-card img {
@@ -554,20 +597,41 @@ footer {
   grid-template-columns: none;
   gap: 0;
   width: 100%;
+  align-items: stretch !important; /* Fuerza a que todas midan lo mismo en altura */
 }
 
 .productos-swiper .swiper-slide {
   width: 300px;
-  height: auto;
-  display: flex;
+  height: auto !important;
+  display: flex !important;
   justify-content: center;
   flex-shrink: 0;
   box-sizing: border-box;
+  align-items: stretch;
 }
 
 .productos-swiper .product-card {
   width: 100%;
   max-width: 300px;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.productos-swiper .product-info {
+  display: flex !important;
+  flex-direction: column !important;
+  flex-grow: 1 !important;
+}
+
+.productos-swiper .price {
+  margin-top: auto !important; /* Empuja el precio y el botón hacia abajo */
+  margin-bottom: 15px;
+}
+
+.productos-swiper .product-card button {
+  width: 100%;
+  margin: 0 !important;
 }
 
 .productos-swiper .swiper-button-prev,
@@ -575,7 +639,7 @@ footer {
   color: #c59d5f;
 }
 
-/* PAGINACIÓN: debajo de las tarjetas (ya no flota encima) */
+/* PAGINACIÓN: debajo de las tarjetas */
 .productos-swiper .swiper-pagination.swiper-pagination-bullets {
   position: static;
   width: 100%;

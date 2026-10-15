@@ -83,19 +83,21 @@ async function cargarproductos() {
     // Limpiamos el contenedor por si acaso tenía algo antes
     panel.innerHTML = "";
 
-    //RECORREMOS LOS productos
+//RECORREMOS LOS productos
     productos.forEach((productos) => {
-      // Creamos la estructura HTML de la tarjeta inyectando los datos de la DB
+      // Creamos la estructura HTML respetando las clases flex
       const panelHTML = `
             <div class="swiper-slide">
-            <div class="product-card">
-                <img src="${productos.imagen}" alt="Producto ${productos.nombre}">
-                <h3>${productos.nombre}</h3>
-                <p>$ ${productos.precio}</p>
-                <a href="detalle-producto.html?producto=${productos.nombre}">
-                  <button>Ver producto</button>
-                </a>
-                </div>
+              <div class="product-card">
+                  <img src="${productos.imagen}" alt="Producto ${productos.nombre}">
+                  <div class="product-info">
+                      <h3>${productos.nombre}</h3>
+                      <p class="price">$ ${productos.precio}</p>
+                      <a href="detalle-producto.html?producto=${productos.nombre}">
+                        <button>Ver producto</button>
+                      </a>
+                  </div>
+              </div>
             </div>
       `;
       // Insertamos esta nueva tarjeta adentro del contenedor principal
