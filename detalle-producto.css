@@ -304,7 +304,9 @@ a {
   background-color: #d4d4d4;
 }
 
-/* RELACIONADOS */
+/* ===================================================
+   TARJETAS DE PRODUCTOS RELACIONADOS (CORREGIDO)
+   =================================================== */
 
 .related-products {
   padding: 80px 8%;
@@ -313,65 +315,31 @@ a {
 .related-products h2 {
   text-align: center;
   margin-bottom: 50px;
-
   font-size: 2.5rem;
 }
 
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
   gap: 30px;
 }
 
 .product-card {
   background-color: white;
-
   border-radius: 20px;
   overflow: hidden;
-
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-
   transition: 0.3s;
-
-  .product-card img {
-  width: 100%;
-  height: 350px;
-  object-fit: cover;
-}
-
-
-.product-info {
-  padding: 20px;
   
-  /* Y agrega estas 2 líneas aquí */
+  /* Flexbox para alinear altura */
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-}
-
-
-.product-info h3 {
-  margin-bottom: 10px;
-}
-
-
-.category {
-  color: #888;
-  margin-bottom: 10px;
-}
-
-
-.price {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 20px;
+  height: 100%;
   
-  /* Y esta última línea aquí */
-  margin-top: auto;
-
-}
-
+  /* EL TRUCO: Un padding general en toda la tarjeta para que el botón no toque la orilla */
+  padding: 15px;
+  background-color: #1a1a1a; /* Mantiene el fondo oscuro de tu tarjeta */
+  border: 1px solid #2a2a2a;
 }
 
 .product-card:hover {
@@ -380,19 +348,34 @@ a {
 
 .product-card img {
   width: 100%;
-  height: 320px;
-
+  height: 280px; /* Reducimos un poquito la altura para dar aire al texto */
   object-fit: cover;
+  border-radius: 12px;
 }
 
 .product-card h3 {
-  padding: 20px 20px 10px;
+  padding: 15px 10px 5px 10px;
+  font-size: 1.05rem;
+  color: #ffffff; /* Texto en blanco para que resalte en el fondo oscuro */
 }
 
 .product-card p {
-  padding: 0 20px 20px;
+  padding: 0 10px 15px 10px;
+  color: #aaaaaa; /* Gris elegante para el precio */
+  font-weight: 600;
+  font-size: 1.1rem;
+  
+  /* Empuja el botón siempre hacia abajo si hay espacio sobrante */
+  margin-top: auto; 
+}
 
-  color: #666;
+/* El botón se acopla perfecto dentro del encuadre */
+.product-card button,
+.product-card .btn-ver-relacionado {
+  width: 100%;
+  margin-top: 0;
+  padding: 12px;
+  border-radius: 10px;
 }
 
 /* FOOTER */
