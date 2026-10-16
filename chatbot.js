@@ -141,11 +141,11 @@ export class Chatbot {
           this.estadoActual = this.ESTADOS.FINAL;
           return "Adiós!! Vuelve pronto.";
         } else if (
-          /\b(env[ií]o|env[ií]os|entrega|entregas|cu[aá]ndo|tiempo|d[ií]as|tarda|tardar|demora|llegar|llega|paquete|pedido)\b/i.test(
+          /\b(env[ií]o|env[ií]os|entrega|entregas|cu[aá]ndo|tiempo|d[ií]as|tarda|tardar|demora|llegar|llega|paquete|pedido|pedidos)\b/i.test(
             orden,
           )
         ) {
-          return "Los pedidos suelen entregarse entre 3 y 7 días hábiles dependiendo de la ubicación del cliente.";
+          return "Los pedidos suelen entregarse entre 3 y 7 días hábiles dependiendo de la ubicación del cliente. Desde <a href="login.html">Mi perfil</a> puedes consultar tus pedidos y ahí mismo puedes consultar el seguimiento de tu compra.";
         } else if (
           /\b(devoluciones|devolver|devoluci[oó]n|regresar|cambiar|cambiarla|devolverlo)\b/i.test(
             orden,
