@@ -145,7 +145,7 @@ export class Chatbot {
             orden,
           )
         ) {
-          return "Los pedidos suelen entregarse entre 3 y 7 días hábiles dependiendo de la ubicación del cliente. Desde <a href="login.html">Mi perfil</a> puedes consultar tus pedidos y ahí mismo puedes consultar el seguimiento de tu compra.";
+          return "Los pedidos suelen entregarse entre 3 y 7 días hábiles dependiendo de la ubicación del cliente. Desde <a href='login.html'>Mi perfil</a> puedes consultar tus pedidos y ahí mismo puedes consultar el seguimiento de tu compra.";
         } else if (
           /\b(devoluciones|devolver|devoluci[oó]n|regresar|cambiar|cambiarla|devolverlo)\b/i.test(
             orden,
