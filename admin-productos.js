@@ -8,6 +8,39 @@ const supabase_conexion = supabase.createClient(
   SUPABASE_ANON_KEY,
 );
 
+document.addEventListener("DOMContentLoaded", async () => {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase_conexion.auth.getUser();
+
+  try {
+    // Vamos a la tabla usuarios a buscar el nombre usando el ID único (UUID)
+    const { data: perfilUsuario, error: tablaError } = await supabase_conexion
+      .from("usuarios") // FROM usuarios
+      .select("nombre,correo,rol") // SELECT nombre
+      .eq("id_usuario", user.id) // WHERE id_usuario = el id asociado a la sesion
+      .single(); // Le decimos que solo nos devuelva una fila no la tabla por si hay mas de uno con el mismo nombre
+
+    if (tablaError) {
+      //Si ocurre un error
+      console.error("Error al traer el nombre:", tablaError);
+      return;
+    }
+
+    //Agregamos el resultado de la consulta en el html
+    if (perfilUsuario) {
+      if (perfilUsuario.rol === "usuario") {
+        window.location.href = "perfil.html";
+      } else {
+        console.log("Hola Admin!");
+      }
+    }
+  } catch (err) {
+    console.error("Error inesperado:", err);
+  }
+});
+
 const modal = document.getElementById("formModal");
 const openBtn = document.getElementById("agregar_prod");
 const closeBtn = document.getElementById("closeModalBtn");
@@ -138,7 +171,9 @@ formularioProducto.addEventListener("submit", async (evento) => {
 
     if (errorTabla) {
       console.error("Error al insertar producto en la DB:", errorTabla);
-      await alerta("La imagen se subió, pero no se pudo registrar el producto.");
+      await alerta(
+        "La imagen se subió, pero no se pudo registrar el producto.",
+      );
       return;
     }
 
@@ -155,7 +190,9 @@ formularioProducto.addEventListener("submit", async (evento) => {
 
     if (errorInv) {
       console.error("Error al insertar producto en la DB:", errorInv);
-      await alerta("La imagen se subió, pero no se pudo registrar el producto.");
+      await alerta(
+        "La imagen se subió, pero no se pudo registrar el producto.",
+      );
       return;
     }
 
@@ -468,4 +505,3 @@ formularioEditar.addEventListener("submit", async (evento) => {
 
 // Inicializamos la función cuando todo el HTML esté listo
 document.addEventListener("DOMContentLoaded", cargarProductosEnTabla);
-
