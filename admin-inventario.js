@@ -8,6 +8,39 @@ const supabase_conexion = supabase.createClient(
   SUPABASE_ANON_KEY,
 );
 
+document.addEventListener("DOMContentLoaded", async () => {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase_conexion.auth.getUser();
+
+  try {
+    // Vamos a la tabla usuarios a buscar el nombre usando el ID único (UUID)
+    const { data: perfilUsuario, error: tablaError } = await supabase_conexion
+      .from("usuarios") // FROM usuarios
+      .select("nombre,correo,rol") // SELECT nombre
+      .eq("id_usuario", user.id) // WHERE id_usuario = el id asociado a la sesion
+      .single(); // Le decimos que solo nos devuelva una fila no la tabla por si hay mas de uno con el mismo nombre
+
+    if (tablaError) {
+      //Si ocurre un error
+      console.error("Error al traer el nombre:", tablaError);
+      return;
+    }
+
+    //Agregamos el resultado de la consulta en el html
+    if (perfilUsuario) {
+      if (perfilUsuario.rol === "usuario") {
+        window.location.href = "perfil.html";
+      } else {
+        console.log("Hola Admin!");
+      }
+    }
+  } catch (err) {
+    console.error("Error inesperado:", err);
+  }
+});
+
 async function cargarProductosEnTabla() {
   try {
     const { data: productos, error } = await supabase_conexion.from("productos")
@@ -99,7 +132,9 @@ tbodyInventario.addEventListener("click", async (evento) => {
 
     // Validamos que sea un número válido y que no sea negativo
     if (isNaN(nuevoStock) || nuevoStock < 0) {
-      await alerta("Por favor, introduce un número entero válido mayor o igual a 0.");
+      await alerta(
+        "Por favor, introduce un número entero válido mayor o igual a 0.",
+      );
       return;
     }
 
@@ -125,4 +160,3 @@ tbodyInventario.addEventListener("click", async (evento) => {
     }
   }
 });
-
