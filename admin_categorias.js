@@ -8,6 +8,39 @@ const supabase_conexion = supabase.createClient(
   SUPABASE_ANON_KEY,
 );
 
+document.addEventListener("DOMContentLoaded", async () => {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase_conexion.auth.getUser();
+
+  try {
+    // Vamos a la tabla usuarios a buscar el nombre usando el ID único (UUID)
+    const { data: perfilUsuario, error: tablaError } = await supabase_conexion
+      .from("usuarios") // FROM usuarios
+      .select("nombre,correo,rol") // SELECT nombre
+      .eq("id_usuario", user.id) // WHERE id_usuario = el id asociado a la sesion
+      .single(); // Le decimos que solo nos devuelva una fila no la tabla por si hay mas de uno con el mismo nombre
+
+    if (tablaError) {
+      //Si ocurre un error
+      console.error("Error al traer el nombre:", tablaError);
+      return;
+    }
+
+    //Agregamos el resultado de la consulta en el html
+    if (perfilUsuario) {
+      if (perfilUsuario.rol === "usuario") {
+        window.location.href = "perfil.html";
+      } else {
+        console.log("Hola Admin!");
+      }
+    }
+  } catch (err) {
+    console.error("Error inesperado:", err);
+  }
+});
+
 const modal = document.getElementById("formModal");
 const openBtn = document.getElementById("info_update");
 const closeBtn = document.getElementById("closeModalBtn");
@@ -283,5 +316,3 @@ confirm;
 
 // Ejecutamos la función al cargar la página del administrador
 document.addEventListener("DOMContentLoaded", cargarCategoriasEnTabla);
-
-
