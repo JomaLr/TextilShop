@@ -295,3 +295,24 @@
 [data-theme="dark"] .main-content tr:nth-child(even) {
   background-color: #252525;
 }
+
+/* ===== Código de verificación (modo oscuro) ===== */
+[data-theme="dark"] .codigo-ayuda {
+  color: #b8b8b8;
+}
+
+[data-theme="dark"] .btn-secundario {
+  background-color: transparent;
+  color: #e6e6e6;
+  border: 1px solid #555;
+}
+
+[data-theme="dark"] .btn-secundario:hover {
+  background-color: #2a2a2a;
+}
+
+[data-theme="dark"] #codigo_correo {
+  background-color: #2a2a2a;
+  color: #f1f1f1;
+  border-color: #555;
+}

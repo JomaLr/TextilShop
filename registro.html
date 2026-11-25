@@ -30,7 +30,7 @@
       <!-- FORMULARIO -->
       <div class="register-form">
         <div class="form-box">
-          <h2>Crear Cuenta</h2>
+          <h2 id="titulo_registro">Crear Cuenta</h2>
           <form id="formulario_registro">
             <div class="input-group">
               <label>Nombre</label>
@@ -60,6 +60,34 @@
               />
             </div>
             <button type="submit">Registrarse</button>
+          </form>
+
+          <form id="formulario_codigo" hidden>
+            <p class="codigo-ayuda" id="texto_codigo">
+              Te enviamos un código de verificación a tu correo.
+            </p>
+
+            <div class="input-group">
+              <label for="codigo_correo">Código de verificación</label>
+              <input
+                id="codigo_correo"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]{6,8}"
+                maxlength="8"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                required
+              />
+            </div>
+
+            <button type="submit">Verificar</button>
+            <button type="button" id="reenviar_codigo" class="btn-secundario">
+              Reenviar código
+            </button>
+            <button type="button" id="cancelar_codigo" class="btn-secundario">
+              Cancelar
+            </button>
           </form>
           <div class="extra-links">
             <p>
