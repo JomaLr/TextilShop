@@ -70,7 +70,9 @@ modal.querySelector("form").addEventListener("submit", async (e) => {
 
   const telefono_prueba = formData.get("mi_telefono");
   if (telefono_prueba.length < 10 && telefono_prueba.length > 12) {
-    await alerta("El numero de telefono debe ser de minimo 10 y maximo 12 digitos.");
+    await alerta(
+      "El numero de telefono debe ser de minimo 10 y maximo 12 digitos.",
+    );
     return;
   }
 
@@ -223,6 +225,7 @@ if (boton_logout) {
       await alerta("¡Sesión cerrada! Vuelve pronto.");
       //Lo mandamos al login ya sin sesion
       localStorage.clear();
+      sessionStorage.clear();
       window.location.href = "index.html";
     } else {
       await alerta(
