@@ -10,17 +10,17 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Chart.js: gráficas del dashboard -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
     <script src="verified_sesion.js"></script>
-    <script src="dashboard.js" defer></script>
     <link rel="stylesheet" href="tema.css" />
     <script src="tema.js" defer></script>
     <script src="accesibilidad.js"></script>
-    <link rel="stylesheet" href="accesibilidad.css">
-   
-
+    <link rel="stylesheet" href="accesibilidad.css" />
+    <script src="dashboard.js" defer></script>
   </head>
   <body>
     <div class="dashboard-container">
@@ -52,8 +52,7 @@
           <h1>Dashboard</h1>
 
           <div class="admin-profile">
-            <a href="perfil.html">
-            </a>
+            <a href="perfil.html"> </a>
             <div>
               <h3 id="username">Cargando...</h3>
               <p id="email_user">Cargando...</p>
@@ -86,11 +85,15 @@
         <section class="charts-container">
           <div class="chart-box">
             <h2>Ingresos por pedido</h2>
-            <div class="chart-canvas"><canvas id="grafica-ingresos"></canvas></div>
+            <div class="chart-canvas">
+              <canvas id="grafica-ingresos"></canvas>
+            </div>
           </div>
           <div class="chart-box">
             <h2>Productos más vendidos</h2>
-            <div class="chart-canvas"><canvas id="grafica-productos"></canvas></div>
+            <div class="chart-canvas">
+              <canvas id="grafica-productos"></canvas>
+            </div>
           </div>
         </section>
 
@@ -115,5 +118,66 @@
         </section>
       </main>
     </div>
+    <!-- Modal de verificación obligatoria -->
+    <dialog
+      id="modal-2fa-admin"
+      style="
+        padding: 30px;
+        border-radius: 12px;
+        border: none;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      "
+    >
+      <h3>Verificación de Seguridad</h3>
+      <p style="color: #666; margin: 15px 0">
+        Enviamos un código de 6 dígitos a tu correo de administrador (<strong
+          id="correo-destino-2fa"
+        ></strong
+        >).
+      </p>
+
+      <input
+        type="text"
+        id="input-codigo-2fa"
+        maxlength="6"
+        placeholder="000000"
+        style="
+          width: 100%;
+          padding: 12px;
+          font-size: 1.5rem;
+          text-align: center;
+          letter-spacing: 8px;
+          margin-bottom: 15px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+        "
+      />
+
+      <button
+        id="btn-validar-2fa"
+        style="
+          width: 100%;
+          padding: 12px;
+          background: #222;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: bold;
+        "
+      >
+        Verificar Acceso
+      </button>
+
+      <p style="margin-top: 15px; font-size: 0.85rem">
+        <a href="#" id="btn-reenviar-2fa" style="color: #c59d5f"
+          >Reenviar código</a
+        >
+        |
+        <a href="perfil.html" style="color: #666">Volver al perfil</a>
+      </p>
+    </dialog>
   </body>
 </html>
