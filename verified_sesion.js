@@ -14,6 +14,8 @@ function iniciarVigilanteInactividad() {
   // Función que cierra la sesión cuando se acaba el tiempo
   const cerrarSesionPorInactividad = async () => {
     await supabase_sesion.auth.signOut();
+    localStorage.clear();
+    sessionStorage.clear();
 
     if (typeof alerta === "function") {
       await alerta("Tu sesión se cerró automáticamente por inactividad.");
