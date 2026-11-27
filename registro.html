@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="es">
   <head>
@@ -10,15 +11,18 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- SweetAlert2: diálogos y avisos -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js"></script>
     <script src="ui.js"></script>
-    <!-- Se corrigió la etiqueta de cierre faltante aquí -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="stylesheet" href="tema.css" />
     <script src="tema.js" defer></script>
-    <link rel="stylesheet" href="accesibilidad.css">
+    <link rel="stylesheet" href="accesibilidad.css" />
   </head>
   <body>
     <header>
@@ -26,14 +30,15 @@
         <a href="index.html" class="logo">TextilShop</a>
       </nav>
     </header>
+
     <div class="register-container">
-      <!-- FORMULARIO -->
       <div class="register-form">
         <div class="form-box">
           <h2 id="titulo_registro">Crear Cuenta</h2>
+
           <form id="formulario_registro">
             <div class="input-group">
-              <label>Nombre</label>
+              <label for="user">Nombre</label>
               <input
                 id="user"
                 type="text"
@@ -41,8 +46,9 @@
                 required
               />
             </div>
+
             <div class="input-group">
-              <label>Correo electrónico</label>
+              <label for="email">Correo electrónico</label>
               <input
                 id="email"
                 type="email"
@@ -50,8 +56,9 @@
                 required
               />
             </div>
+
             <div class="input-group">
-              <label>Contraseña</label>
+              <label for="password">Contraseña</label>
               <input
                 id="password"
                 type="password"
@@ -59,6 +66,14 @@
                 required
               />
             </div>
+
+            <div
+              class="cf-turnstile"
+              data-sitekey="0x4AAAAAAGVMb7RtGCWgcIkW"
+              data-theme="dark"
+              style="margin-top: 15px"
+            ></div>
+
             <button type="submit">Registrarse</button>
           </form>
 
@@ -82,13 +97,16 @@
             </div>
 
             <button type="submit">Verificar</button>
+
             <button type="button" id="reenviar_codigo" class="btn-secundario">
               Reenviar código
             </button>
+
             <button type="button" id="cancelar_codigo" class="btn-secundario">
               Cancelar
             </button>
           </form>
+
           <div class="extra-links">
             <p>
               ¿Ya tienes cuenta?
@@ -96,13 +114,12 @@
             </p>
             <br /><br />
             <a href="index.html" title="Volver al inicio">
-               << Volver a la tienda
+              &lt;&lt; Volver a la tienda
             </a>
           </div>
         </div>
       </div>
 
-      <!-- IMAGEN -->
       <div class="register-image">
         <div class="overlay">
           <h1>Únete a TextilShop</h1>
@@ -113,6 +130,7 @@
         </div>
       </div>
     </div>
+
     <script src="register.js" defer></script>
     <script src="accesibilidad.js"></script>
   </body>
