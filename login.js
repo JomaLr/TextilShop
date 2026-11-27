@@ -1,14 +1,11 @@
-// Configura la conexión a Supabase
 const SUPABASE_URL = "https://ytqxpnuulmyktsxhpyod.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_uGAEEt8T2SCD09VtHmEeQQ_0nOXvJ1a";
 
-// Inicializamos el cliente de Supabase
 const supabase_conexion = supabase.createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
 );
 
-// Verifica si ya existe una sesión iniciada para redirigir al perfil
 async function verificarSesion() {
   const { data } = await supabase_conexion.auth.getSession();
 
@@ -17,20 +14,26 @@ async function verificarSesion() {
   }
 }
 
-// Ejecutamos la función apenas cargue la pantalla
 verificarSesion();
 
-// Capturamos los formularios desde el HTML
 const formulario = document.getElementById("formulario_login");
 const formularioCodigo = document.getElementById("formulario_codigo");
 const tituloLogin = document.getElementById("titulo_login");
 const botonReenviar = document.getElementById("reenviar_codigo");
 const botonCancelar = document.getElementById("cancelar_codigo");
 
-// Correo al que se le mandó el código
 let correoActual = "";
 
-// Muestra el formulario donde se escribe el código
+function obtenerTokenCaptcha() {
+  return document.querySelector('[name="cf-turnstile-response"]')?.value || "";
+}
+
+function reiniciarCaptcha() {
+  if (typeof turnstile !== "undefined") {
+    turnstile.reset();
+  }
+}
+
 function mostrarPasoCodigo() {
   formulario.hidden = true;
   formularioCodigo.hidden = false;
@@ -46,10 +49,9 @@ function mostrarPasoLogin() {
   formularioCodigo.hidden = true;
   formulario.hidden = false;
   tituloLogin.innerText = "Iniciar Sesión";
+  reiniciarCaptcha();
 }
 
-// Pregunta a la base de datos si la cuenta está bloqueada.
-// Si lo está (o si hubo un error) avisa al usuario y regresa true
 async function estaBloqueado(correo) {
   const { data: estadoBloqueo, error: errorVerif } =
     await supabase_conexion.rpc("verificar_bloqueo_usuario", {
@@ -78,7 +80,6 @@ async function estaBloqueado(correo) {
   return false;
 }
 
-// Suma un intento fallido (contraseña o código). Regresa true si la cuenta quedó bloqueada
 async function registrarFallo(correo, mensaje) {
   const { data: resultadoFallo } = await supabase_conexion.rpc(
     "gestionar_intento_login",
@@ -96,11 +97,13 @@ async function registrarFallo(correo, mensaje) {
   return false;
 }
 
-// Manda el código al correo. Regresa true si se envió bien
-async function enviarCodigo(correo) {
+async function enviarCodigo(correo, captchaToken) {
   const { error } = await supabase_conexion.auth.signInWithOtp({
     email: correo,
-    options: { shouldCreateUser: false }, // solo usuarios que ya existen
+    options: {
+      shouldCreateUser: false,
+      captchaToken: captchaToken,
+    },
   });
 
   if (error) {
@@ -111,7 +114,6 @@ async function enviarCodigo(correo) {
   return true;
 }
 
-// Evita que el botón de reenviar se use seguido (60 segundos)
 function iniciarEsperaReenvio() {
   let segundos = 60;
   botonReenviar.disabled = true;
@@ -128,36 +130,43 @@ function iniciarEsperaReenvio() {
   }, 1000);
 }
 
-// PASO 1: correo y contraseña
 formulario.addEventListener("submit", async (evento) => {
   evento.preventDefault();
 
   const email = document.getElementById("email").value.trim();
   const contrasena = document.getElementById("password").value;
+  const captchaToken = obtenerTokenCaptcha();
 
   if (email === "" || contrasena === "") {
     await alerta("Por favor, rellena todos los campos.");
     return;
   }
 
-  // Desactivamos temporalmente el botón para evitar dobles clics accidentales
+  if (!captchaToken) {
+    await alerta("Por favor, completa la verificación de seguridad.");
+    return;
+  }
+
   const botonSubmit = formulario.querySelector("button");
   if (botonSubmit) botonSubmit.disabled = true;
 
   try {
-    // 1. Verificar si la cuenta está bloqueada
     if (await estaBloqueado(email)) {
+      reiniciarCaptcha();
       return;
     }
 
-    // 2. Comprobar que la contraseña sea correcta
     const { error } = await supabase_conexion.auth.signInWithPassword({
       email: email,
       password: contrasena,
+      options: {
+        captchaToken: captchaToken,
+      },
     });
 
-    // 3. Si falló el inicio de sesión
     if (error) {
+      reiniciarCaptcha();
+
       if (error.code === "email_not_confirmed") {
         await alerta(
           "Tu correo todavía no está verificado. Vuelve a registrarte con el mismo correo para recibir un nuevo código.",
@@ -170,39 +179,51 @@ formulario.addEventListener("submit", async (evento) => {
       return;
     }
 
-    // 4. La contraseña es correcta: cerramos esa sesión y mandamos el código al correo
     await supabase_conexion.auth.signOut({ scope: "local" });
 
+    reiniciarCaptcha();
+
+    await new Promise((resolve) => {
+      const esperarNuevoToken = setInterval(() => {
+        if (obtenerTokenCaptcha()) {
+          clearInterval(esperarNuevoToken);
+          resolve();
+        }
+      }, 200);
+    });
+
+    const segundoToken = obtenerTokenCaptcha();
     correoActual = email;
-    const enviado = await enviarCodigo(email);
+    const enviado = await enviarCodigo(email, segundoToken);
 
     if (!enviado) {
+      reiniciarCaptcha();
       return;
     }
 
     mostrarPasoCodigo();
     iniciarEsperaReenvio();
   } catch (err) {
+    reiniciarCaptcha();
     console.error("Error inesperado en login:", err);
     await alerta("Ocurrió un error inesperado al iniciar sesión.");
   } finally {
-    // Volvemos a habilitar el botón pase lo que pase
     if (botonSubmit) botonSubmit.disabled = false;
   }
 });
 
-// PASO 2: código que llegó al correo
 formularioCodigo.addEventListener("submit", async (evento) => {
   evento.preventDefault();
 
-  const codigo = document.getElementById("codigo_correo").value.replace(/\D/g, "");
+  const codigo = document
+    .getElementById("codigo_correo")
+    .value.replace(/\D/g, "");
 
   if (!/^\d{6,8}$/.test(codigo)) {
     await alerta("El código debe ser de 6 a 8 dígitos.");
     return;
   }
 
-  // El código también cuenta para el bloqueo, si no se podría adivinar probando
   if (await estaBloqueado(correoActual)) {
     mostrarPasoLogin();
     return;
@@ -227,7 +248,6 @@ formularioCodigo.addEventListener("submit", async (evento) => {
     return;
   }
 
-  // Todo salió bien: limpiamos el contador de intentos
   await supabase_conexion.rpc("gestionar_intento_login", {
     p_correo: correoActual,
     p_exito: true,
@@ -238,7 +258,18 @@ formularioCodigo.addEventListener("submit", async (evento) => {
 });
 
 botonReenviar.addEventListener("click", async () => {
-  const enviado = await enviarCodigo(correoActual);
+  reiniciarCaptcha();
+
+  await new Promise((resolve) => {
+    const esperarToken = setInterval(() => {
+      if (obtenerTokenCaptcha()) {
+        clearInterval(esperarToken);
+        resolve();
+      }
+    }, 200);
+  });
+
+  const enviado = await enviarCodigo(correoActual, obtenerTokenCaptcha());
 
   if (enviado) {
     await alerta("Te enviamos un nuevo código.", "success");
